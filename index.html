@@ -1,66 +1,126 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <title>Haikyu Fly High – Team Builder</title>
-  <style>
+<meta charset="UTF-8">
+<title>Haikyu Fly High - Team Builder</title>
+<style>
     body {
-      background-color: #222;
-      color: #eee;
-      font-family: sans-serif;
-      padding: 20px;
+        background-color: #222;
+        color: #fff;
+        font-family: Arial, sans-serif;
+        text-align: center;
     }
-    .team-builder {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      grid-template-rows: repeat(2, auto);
-      gap: 20px;
-      max-width: 960px;
-      margin: 0 auto;
+
+    .team-layout {
+        display: grid;
+        grid-template-columns: repeat(4, 150px);
+        grid-template-rows: repeat(2, 200px);
+        gap: 20px;
+        justify-content: center;
+        margin-top: 30px;
     }
-    .slot {
-      background-color: #333;
-      padding: 10px;
-      border-radius: 8px;
-      text-align: center;
+
+    .hex {
+        position: relative;
+        width: 150px;
+        height: 173px;
+        background-color: #444;
+        clip-path: polygon(25% 6.7%, 75% 6.7%, 100% 50%, 75% 93.3%, 25% 93.3%, 0% 50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background 0.3s;
     }
-    .slot.light {
-      background-color: #444;
+
+    .hex:hover {
+        background-color: #555;
     }
-    .slot img {
-      width: 100%;
-      height: auto;
-      border-radius: 4px;
+
+    .hex img {
+        width: 90%;
+        height: auto;
+        border-radius: 6px;
     }
-    .character-name {
-      margin: 8px 0 4px;
-      font-size: 1.1em;
-      font-weight: bold;
+
+    .role-label {
+        position: absolute;
+        bottom: -20px;
+        font-size: 14px;
+        font-weight: bold;
     }
-    .synergy {
-      font-size: 0.9em;
-      margin: 2px 0;
+
+    #synergy-panel {
+        margin-top: 50px;
+        background-color: #333;
+        padding: 15px;
+        border-radius: 10px;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: left;
     }
-  </style>
+</style>
 </head>
 <body>
-  <h1>Team Builder – Haikyu!! FLY HIGH</h1>
-  <div class="team-builder">
-    <!-- Exemplo de slot preenchido -->
-    <div class="slot">
-      <img src="URL_DA_FOTO" alt="Nome do Personagem" />
-      <div class="character-name">Nome do Personagem</div>
-      <div class="synergy">Escola: Karasuno</div>
-      <div class="synergy">Vínculo: Freak Quick</div>
+
+<h1>Haikyu!! Fly High - Team Builder</h1>
+
+<div class="team-layout">
+    <div class="hex" data-role="Setter">
+        <span class="role-label">Setter</span>
     </div>
-    <!-- Copie e personalize mais slots -->
-    <div class="slot light">...</div>
-    <div class="slot">...</div>
-    <div class="slot light">...</div>
-    <div class="slot">...</div>
-    <div class="slot light">...</div>
-    <div class="slot">...</div>
-    <div class="slot light">...</div>
-  </div>
+    <div class="hex" data-role="Wing Spiker">
+        <span class="role-label">Wing Spiker</span>
+    </div>
+    <div class="hex" data-role="Middle Blocker">
+        <span class="role-label">Middle Blocker</span>
+    </div>
+    <div class="hex" data-role="Libero">
+        <span class="role-label">Libero</span>
+    </div>
+    <div class="hex" data-role="Wing Spiker">
+        <span class="role-label">Wing Spiker</span>
+    </div>
+    <div class="hex" data-role="Middle Blocker">
+        <span class="role-label">Middle Blocker</span>
+    </div>
+    <div class="hex" data-role="Outside Hitter">
+        <span class="role-label">Outside Hitter</span>
+    </div>
+</div>
+
+<div id="synergy-panel">
+    <h2>Sinergias Ativas</h2>
+    <ul id="synergy-list">
+        <li>Nenhuma sinergia ativa</li>
+    </ul>
+</div>
+
+<script>
+    const hexes = document.querySelectorAll('.hex');
+    const synergyList = document.getElementById('synergy-list');
+
+    // Exemplo simples de clique
+    hexes.forEach(hex => {
+        hex.addEventListener('click', () => {
+            const role = hex.getAttribute('data-role');
+            // Aqui você pode abrir um seletor de personagens
+            hex.innerHTML = `<img src="personagem_exemplo.jpg" alt="${role}">
+                             <span class="role-label">${role}</span>`;
+            atualizarSinergias();
+        });
+    });
+
+    function atualizarSinergias() {
+        synergyList.innerHTML = `
+            <li>Karasuno x Nekoma</li>
+            <li>Freak Quick</li>
+        `;
+    }
+</script>
+
 </body>
 </html>
+
