@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Haikyu Fly High – Team Builder</title>
+  <style>
+    body {
+      background-color: #222;
+      color: #eee;
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    .team-builder {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(2, auto);
+      gap: 20px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    .slot {
+      background-color: #333;
+      padding: 10px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .slot.light {
+      background-color: #444;
+    }
+    .slot img {
+      width: 100%;
+      height: auto;
+      border-radius: 4px;
+    }
+    .character-name {
+      margin: 8px 0 4px;
+      font-size: 1.1em;
+      font-weight: bold;
+    }
+    .synergy {
+      font-size: 0.9em;
+      margin: 2px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Team Builder – Haikyu!! FLY HIGH</h1>
+  <div class="team-builder">
+    <!-- Exemplo de slot preenchido -->
+    <div class="slot">
+      <img src="URL_DA_FOTO" alt="Nome do Personagem" />
+      <div class="character-name">Nome do Personagem</div>
+      <div class="synergy">Escola: Karasuno</div>
+      <div class="synergy">Vínculo: Freak Quick</div>
+    </div>
+    <!-- Copie e personalize mais slots -->
+    <div class="slot light">...</div>
+    <div class="slot">...</div>
+    <div class="slot light">...</div>
+    <div class="slot">...</div>
+    <div class="slot light">...</div>
+    <div class="slot">...</div>
+    <div class="slot light">...</div>
+  </div>
+</body>
+</html>
