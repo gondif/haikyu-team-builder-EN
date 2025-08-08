@@ -68,10 +68,26 @@
         text-align: left;
     }
 
-    select {
-        padding: 5px;
-        border-radius: 5px;
+    .scroll-menu {
+        display: none;
         margin-top: 10px;
+        max-height: 200px;
+        overflow-y: auto;
+        background-color: #333;
+        padding: 10px;
+        border-radius: 8px;
+    }
+
+    .scroll-menu img {
+        width: 80px;
+        height: auto;
+        cursor: grab;
+        margin: 5px;
+        border: 2px solid transparent;
+    }
+
+    .scroll-menu img:hover {
+        border: 2px solid yellow;
     }
 </style>
 </head>
@@ -89,6 +105,8 @@
     <div class="hex" data-role="Opposite"><span class="role-label">Opposite</span></div>
 </div>
 
+<div class="scroll-menu" id="scrollMenu"></div>
+
 <div id="synergy-panel">
     <h2>Sinergias Ativas</h2>
     <ul id="synergy-list">
@@ -98,47 +116,72 @@
 
 <script>
 const personagens = [
-    { nome: "Tobio Kageyama", funcao: "Setter", img: "img/kageyama.png", escola: "Karasuno", vinculo: "Freak Quick" },
-    { nome: "Kōshi Sugawara", funcao: "Setter", img: "img/sugawara.png", escola: "Karasuno", vinculo: "Suporte" },
-    { nome: "Kenma Kozume", funcao: "Setter", img: "img/kenma.png", escola: "Nekoma", vinculo: "Time Nekoma" },
-    { nome: "Toru Oikawa", funcao: "Setter", img: "img/oikawa.png", escola: "Aoba Johsai", vinculo: "Parceria Iwaizumi" },
-    { nome: "Shoyo Hinata", funcao: "Middle Blocker", img: "img/hinata.png", escola: "Karasuno", vinculo: "Freak Quick" },
-    { nome: "Tetsurō Kuroo", funcao: "Middle Blocker", img: "img/kuroo.png", escola: "Nekoma", vinculo: "Time Nekoma" },
-    { nome: "Kei Tsukishima", funcao: "Middle Blocker", img: "img/tsukishima.png", escola: "Karasuno", vinculo: "Dupla Yamaguchi" },
-    { nome: "Takanobu Aone", funcao: "Middle Blocker", img: "img/aone.png", escola: "Date Tech", vinculo: "Paredão de Ferro" },
-    { nome: "Wakatoshi Ushijima", funcao: "Wing Spiker", img: "img/ushijima.png", escola: "Shiratorizawa", vinculo: "Capitão" },
-    { nome: "Hajime Iwaizumi", funcao: "Wing Spiker", img: "img/iwaizumi.png", escola: "Aoba Johsai", vinculo: "Parceria Oikawa" },
-    { nome: "Ryūnosuke Tanaka", funcao: "Wing Spiker", img: "img/tanaka.png", escola: "Karasuno", vinculo: "Dupla Nishinoya" },
-    { nome: "Kentarō Kyōtani", funcao: "Opposite", img: "img/kyotani.png", escola: "Aoba Johsai", vinculo: "Time Aoba Johsai" },
-    { nome: "Asahi Azumane", funcao: "Wing Spiker", img: "img/asahi.png", escola: "Karasuno", vinculo: "Time Karasuno" },
-    { nome: "Daichi Sawamura", funcao: "Opposite", img: "img/daichi.png", escola: "Karasuno", vinculo: "Capitão" },
-    { nome: "Yū Nishinoya", funcao: "Libero", img: "img/nishinoya.png", escola: "Karasuno", vinculo: "Dupla Tanaka" },
-    { nome: "Tadashi Yamaguchi", funcao: "Middle Blocker", img: "img/yamaguchi.png", escola: "Karasuno", vinculo: "Dupla Tsukishima" },
-    { nome: "Issei Matsukawa", funcao: "Middle Blocker", img: "img/matsukawa.png", escola: "Aoba Johsai", vinculo: "Time Aoba Johsai" }
+    { nome: "Kageyama", funcao: "S", img: "img/kageyama.png", escola: "Karasuno", vinculo: "Freak Quick" },
+    { nome: "Sugawara", funcao: "S", img: "img/sugawara.png", escola: "Karasuno", vinculo: "Suporte" },
+    { nome: "Kenma Kozume", funcao: "S", img: "img/kenmaSP.png", escola: "Nekoma", vinculo: "Time Nekoma" },
+    { nome: "Toru Oikawa", funcao: "S", img: "img/oikawa.png", escola: "Aoba Johsai", vinculo: "Parceria Iwaizumi" },
+    { nome: "Hinata", funcao: "MB", img: "img/hinataSP.png", escola: "Karasuno", vinculo: "Freak Quick" },
+    { nome: "Kuroo", funcao: "MB", img: "img/kuroo.png", escola: "Nekoma", vinculo: "Time Nekoma" },
+    { nome: "Tsukishima", funcao: "MB", img: "img/tsukishima.png", escola: "Karasuno", vinculo: "Dupla Yamaguchi" },
+    { nome: "Aone", funcao: "MB", img: "img/aone.png", escola: "Date Tech", vinculo: "Paredão de Ferro" },
+    { nome: "Ushijima", funcao: "WS", img: "img/ushijima.png", escola: "Shiratorizawa", vinculo: "Capitão" },
+    { nome: "Iwaizumi", funcao: "WS", img: "img/iwaizumi.png", escola: "Aoba Johsai", vinculo: "Parceria Oikawa" },
+    { nome: "Tanaka", funcao: "WS", img: "img/tanaka.png", escola: "Karasuno", vinculo: "Dupla Nishinoya" },
+    { nome: "Kentaro Kyotani", funcao: "OP", img: "img/kyotani.png", escola: "Aoba Johsai", vinculo: "Time Aoba Johsai" },
+    { nome: "Azumane", funcao: "WS", img: "img/asahi.png", escola: "Karasuno", vinculo: "Time Karasuno" },
+    { nome: "Daichi", funcao: "OP", img: "img/daichi.png", escola: "Karasuno", vinculo: "Capitão" },
+    { nome: "Nishinoya", funcao: "L", img: "img/nishinoya.png", escola: "Karasuno", vinculo: "Dupla Tanaka" },
+    { nome: "Yamaguchi", funcao: "MB", img: "img/yamaguchi.png", escola: "Karasuno", vinculo: "Dupla Tsukishima" },
+    { nome: "Issei Matsukawa", funcao: "MB", img: "img/matsukawa.png", escola: "Aoba Johsai", vinculo: "Time Aoba Johsai" }
 ];
 
 const hexes = document.querySelectorAll('.hex');
 const synergyList = document.getElementById('synergy-list');
-const selecionados = [];
+const scrollMenu = document.getElementById('scrollMenu');
+let selecionados = [];
 
 hexes.forEach(hex => {
     hex.addEventListener('click', () => {
         const role = hex.getAttribute('data-role');
-        const disponiveis = personagens.filter(p => p.funcao === role);
-        let opcoes = "Escolha um personagem:\n";
-        disponiveis.forEach((p, i) => {
-            opcoes += `${i + 1}. ${p.nome}\n`;
-        });
-        const escolha = prompt(opcoes);
-        if (escolha && disponiveis[escolha - 1]) {
-            const escolhido = disponiveis[escolha - 1];
-            hex.innerHTML = `<img src="${escolhido.img}" alt="${escolhido.nome}">
-                             <span class="role-label">${escolhido.nome}</span>`;
-            selecionados.push(escolhido);
-            atualizarSinergias();
+        mostrarMenu(role, hex);
+    });
+
+    // Permitir soltar personagens
+    hex.addEventListener('dragover', e => e.preventDefault());
+    hex.addEventListener('drop', e => {
+        e.preventDefault();
+        const nome = e.dataTransfer.getData('text');
+        const escolhido = personagens.find(p => p.nome === nome);
+        if (escolhido) {
+            setPersonagemNoHex(hex, escolhido);
         }
     });
 });
+
+function mostrarMenu(role, hex) {
+    scrollMenu.innerHTML = '';
+    const disponiveis = personagens.filter(p => p.funcao === role);
+    disponiveis.forEach(p => {
+        const img = document.createElement('img');
+        img.src = p.img;
+        img.alt = p.nome;
+        img.draggable = true;
+        img.title = p.nome;
+        img.addEventListener('click', () => setPersonagemNoHex(hex, p));
+        img.addEventListener('dragstart', e => {
+            e.dataTransfer.setData('text', p.nome);
+        });
+        scrollMenu.appendChild(img);
+    });
+    scrollMenu.style.display = 'flex';
+}
+
+function setPersonagemNoHex(hex, personagem) {
+    hex.innerHTML = `<img src="${personagem.img}" alt="${personagem.nome}">
+                     <span class="role-label">${personagem.nome}</span>`;
+    selecionados.push(personagem);
+    atualizarSinergias();
+}
 
 function atualizarSinergias() {
     synergyList.innerHTML = "";
@@ -155,3 +198,4 @@ function atualizarSinergias() {
 
 </body>
 </html>
+
