@@ -11,6 +11,10 @@
         text-align: center;
     }
 
+    h1 {
+        margin-top: 20px;
+    }
+
     .team-layout {
         display: grid;
         grid-template-columns: repeat(4, 150px);
@@ -32,6 +36,7 @@
         justify-content: center;
         cursor: pointer;
         transition: background 0.3s;
+        overflow: hidden;
     }
 
     .hex:hover {
@@ -39,7 +44,7 @@
     }
 
     .hex img {
-        width: 90%;
+        width: 100%;
         height: auto;
         border-radius: 6px;
     }
@@ -49,6 +54,7 @@
         bottom: -20px;
         font-size: 14px;
         font-weight: bold;
+        color: #fff;
     }
 
     #synergy-panel {
@@ -61,34 +67,26 @@
         margin-right: auto;
         text-align: left;
     }
+
+    select {
+        padding: 5px;
+        border-radius: 5px;
+        margin-top: 10px;
+    }
 </style>
 </head>
 <body>
 
 <h1>Haikyu!! Fly High - Team Builder</h1>
 
-<div class="team-layout">
-    <div class="hex" data-role="Setter">
-        <span class="role-label">Setter</span>
-    </div>
-    <div class="hex" data-role="Wing Spiker">
-        <span class="role-label">Wing Spiker</span>
-    </div>
-    <div class="hex" data-role="Middle Blocker">
-        <span class="role-label">Middle Blocker</span>
-    </div>
-    <div class="hex" data-role="Libero">
-        <span class="role-label">Libero</span>
-    </div>
-    <div class="hex" data-role="Wing Spiker">
-        <span class="role-label">Wing Spiker</span>
-    </div>
-    <div class="hex" data-role="Middle Blocker">
-        <span class="role-label">Middle Blocker</span>
-    </div>
-    <div class="hex" data-role="Outside Hitter">
-        <span class="role-label">Outside Hitter</span>
-    </div>
+<div class="team-layout" id="team">
+    <div class="hex" data-role="Setter"><span class="role-label">Setter</span></div>
+    <div class="hex" data-role="Wing Spiker"><span class="role-label">Wing Spiker</span></div>
+    <div class="hex" data-role="Middle Blocker"><span class="role-label">Middle Blocker</span></div>
+    <div class="hex" data-role="Libero"><span class="role-label">Libero</span></div>
+    <div class="hex" data-role="Wing Spiker"><span class="role-label">Wing Spiker</span></div>
+    <div class="hex" data-role="Middle Blocker"><span class="role-label">Middle Blocker</span></div>
+    <div class="hex" data-role="Opposite"><span class="role-label">Opposite</span></div>
 </div>
 
 <div id="synergy-panel">
@@ -99,28 +97,61 @@
 </div>
 
 <script>
-    const hexes = document.querySelectorAll('.hex');
-    const synergyList = document.getElementById('synergy-list');
+const personagens = [
+    { nome: "Tobio Kageyama", funcao: "Setter", img: "img/kageyama.png", escola: "Karasuno", vinculo: "Freak Quick" },
+    { nome: "Kōshi Sugawara", funcao: "Setter", img: "img/sugawara.png", escola: "Karasuno", vinculo: "Suporte" },
+    { nome: "Kenma Kozume", funcao: "Setter", img: "img/kenma.png", escola: "Nekoma", vinculo: "Time Nekoma" },
+    { nome: "Toru Oikawa", funcao: "Setter", img: "img/oikawa.png", escola: "Aoba Johsai", vinculo: "Parceria Iwaizumi" },
+    { nome: "Shoyo Hinata", funcao: "Middle Blocker", img: "img/hinata.png", escola: "Karasuno", vinculo: "Freak Quick" },
+    { nome: "Tetsurō Kuroo", funcao: "Middle Blocker", img: "img/kuroo.png", escola: "Nekoma", vinculo: "Time Nekoma" },
+    { nome: "Kei Tsukishima", funcao: "Middle Blocker", img: "img/tsukishima.png", escola: "Karasuno", vinculo: "Dupla Yamaguchi" },
+    { nome: "Takanobu Aone", funcao: "Middle Blocker", img: "img/aone.png", escola: "Date Tech", vinculo: "Paredão de Ferro" },
+    { nome: "Wakatoshi Ushijima", funcao: "Wing Spiker", img: "img/ushijima.png", escola: "Shiratorizawa", vinculo: "Capitão" },
+    { nome: "Hajime Iwaizumi", funcao: "Wing Spiker", img: "img/iwaizumi.png", escola: "Aoba Johsai", vinculo: "Parceria Oikawa" },
+    { nome: "Ryūnosuke Tanaka", funcao: "Wing Spiker", img: "img/tanaka.png", escola: "Karasuno", vinculo: "Dupla Nishinoya" },
+    { nome: "Kentarō Kyōtani", funcao: "Opposite", img: "img/kyotani.png", escola: "Aoba Johsai", vinculo: "Time Aoba Johsai" },
+    { nome: "Asahi Azumane", funcao: "Wing Spiker", img: "img/asahi.png", escola: "Karasuno", vinculo: "Time Karasuno" },
+    { nome: "Daichi Sawamura", funcao: "Opposite", img: "img/daichi.png", escola: "Karasuno", vinculo: "Capitão" },
+    { nome: "Yū Nishinoya", funcao: "Libero", img: "img/nishinoya.png", escola: "Karasuno", vinculo: "Dupla Tanaka" },
+    { nome: "Tadashi Yamaguchi", funcao: "Middle Blocker", img: "img/yamaguchi.png", escola: "Karasuno", vinculo: "Dupla Tsukishima" },
+    { nome: "Issei Matsukawa", funcao: "Middle Blocker", img: "img/matsukawa.png", escola: "Aoba Johsai", vinculo: "Time Aoba Johsai" }
+];
 
-    // Exemplo simples de clique
-    hexes.forEach(hex => {
-        hex.addEventListener('click', () => {
-            const role = hex.getAttribute('data-role');
-            // Aqui você pode abrir um seletor de personagens
-            hex.innerHTML = `<img src="personagem_exemplo.jpg" alt="${role}">
-                             <span class="role-label">${role}</span>`;
-            atualizarSinergias();
+const hexes = document.querySelectorAll('.hex');
+const synergyList = document.getElementById('synergy-list');
+const selecionados = [];
+
+hexes.forEach(hex => {
+    hex.addEventListener('click', () => {
+        const role = hex.getAttribute('data-role');
+        const disponiveis = personagens.filter(p => p.funcao === role);
+        let opcoes = "Escolha um personagem:\n";
+        disponiveis.forEach((p, i) => {
+            opcoes += `${i + 1}. ${p.nome}\n`;
         });
+        const escolha = prompt(opcoes);
+        if (escolha && disponiveis[escolha - 1]) {
+            const escolhido = disponiveis[escolha - 1];
+            hex.innerHTML = `<img src="${escolhido.img}" alt="${escolhido.nome}">
+                             <span class="role-label">${escolhido.nome}</span>`;
+            selecionados.push(escolhido);
+            atualizarSinergias();
+        }
     });
+});
 
-    function atualizarSinergias() {
-        synergyList.innerHTML = `
-            <li>Karasuno x Nekoma</li>
-            <li>Freak Quick</li>
-        `;
-    }
+function atualizarSinergias() {
+    synergyList.innerHTML = "";
+    const escolas = new Set();
+    const vinculos = new Set();
+    selecionados.forEach(p => {
+        escolas.add(p.escola);
+        vinculos.add(p.vinculo);
+    });
+    escolas.forEach(e => synergyList.innerHTML += `<li>Escola: ${e}</li>`);
+    vinculos.forEach(v => synergyList.innerHTML += `<li>Vínculo: ${v}</li>`);
+}
 </script>
 
 </body>
 </html>
-
