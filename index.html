@@ -138,7 +138,8 @@
 </style>
 </head>
 <body>
-
+    
+<button id="toggle-lang" style="margin-top:15px;">EN</button>
 <h1>Haikyu!! Fly High - Team Builder</h1>
 
 <div class="team-grid">
@@ -669,6 +670,21 @@ atualizarSinergias = function() {
     }
 };
 
+    let currentLang = localStorage.getItem('lang') || 'pt';
+
+// Define o texto inicial do botão
+document.getElementById("toggle-lang").textContent = currentLang === 'pt' ? 'EN' : 'PT';
+
+// Evento de clique no botão
+document.getElementById("toggle-lang").addEventListener("click", () => {
+    if (currentLang === 'pt') {
+        localStorage.setItem('lang', 'en');
+        window.location.href = "indexEN.html";
+    } else {
+        localStorage.setItem('lang', 'pt');
+        window.location.href = "indexPT.html";
+    }
+    
 </script>
 
 </body>
