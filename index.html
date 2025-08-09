@@ -202,6 +202,10 @@ function addBenchSlot() {
 
 function attachBenchEvents(slot) {
     slot.addEventListener("click", () => mostrarMenu("bench", slot));
+    slot.addEventListener("contextmenu", (e) => {
+        e.preventDefault();
+        removerPersonagem(slot);
+    });
 }
 
 function mostrarMenu(role, slot) {
@@ -263,6 +267,23 @@ function setPersonagem(slot, personagem, role) {
     atualizarSinergias();
 }
 
+function removerPersonagem(slot) {
+    if (slot.dataset.nome) {
+        selecionados = selecionados.filter(p => p.nome !== slot.dataset.nome);
+        slot.innerHTML = ""; 
+        delete slot.dataset.nome;
+
+        const infoDiv = slot.parentElement.querySelector('.player-info');
+        if (slot.classList.contains("bench-slot")) {
+            infoDiv.textContent = "Banco";
+        } else {
+            infoDiv.textContent = slot.dataset.role || slot.getAttribute("data-role") || slot.parentElement.querySelector('.hex')?.dataset.role || "";
+        }
+
+        atualizarSinergias();
+    }
+}
+
 function atualizarSinergias() {
     synergyList.innerHTML = "";
     const escolas = new Set();
@@ -282,6 +303,10 @@ function atualizarSinergias() {
 
 document.querySelectorAll(".hex").forEach(slot => {
     slot.addEventListener("click", () => mostrarMenu(slot.dataset.role, slot));
+    slot.addEventListener("contextmenu", (e) => {
+        e.preventDefault();
+        removerPersonagem(slot);
+    });
 });
 
 document.querySelectorAll(".bench-slot").forEach(slot => attachBenchEvents(slot));
@@ -289,4 +314,3 @@ document.querySelectorAll(".bench-slot").forEach(slot => attachBenchEvents(slot)
 
 </body>
 </html>
-
