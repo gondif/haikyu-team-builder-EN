@@ -362,7 +362,7 @@ function atualizarSinergias() {
     // Sinergia de escola (4 ou mais)
     for (const escola in escolasCount) {
         if (escolasCount[escola] >= 4) {
-            synergyListEl.innerHTML += `<li>Escola: ${escola} - ${descricoesSinergia[e] || ""}</li>`;
+            synergyListEl.innerHTML += `<li>Escola: ${escola} - ${descricoesSinergia[escola] || ""}</li>`;
             algumaSinergia = true;
         }
     }
