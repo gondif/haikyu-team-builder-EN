@@ -170,59 +170,59 @@
 
 <script>
 const personagens = [
-{ nome: "Kageyama UR", funcao: "S", img: "img/kageyamaUR.png", escola: "Karasuno", vinculo: ["Eccentric Duo", "Karasuno Geniuses"] },
-{ nome: "Kageyama SSR", funcao: "S", img: "img/kageyamaSR.png", escola: "Karasuno", vinculo: ["nothing"] },
-{ nome: "Hinata SP", funcao: "MB", img: "img/hinataSP.png", escola: "Karasuno", vinculo: ["Eccentric Duo", "Cherry Blossom Viewing" , "Sun vs Moon"] },
-{ nome: "Hinata SSR", funcao: "MB", img: "img/hinataSR.png", escola: "Karasuno", vinculo: ["Eccentric Duo"] },
-{ nome: "Nishinoya SP", funcao: "L", img: "img/nishinoyaSP.png", escola: "Karasuno", vinculo: ["Karasuno Geniuses", "After School"] },
-{ nome: "Nishinoya SSR", funcao: "L", img: "img/nishinoyaSR.png", escola: "Karasuno", vinculo: ["Guardian God and Wing Spiker" , "Kiyoko Squad"] },
-{ nome: "Tanaka SSR", funcao: "WS", img: "img/tanakaSR.png", escola: "Karasuno", vinculo: ["Kiyoko Squad"] },
-{ nome: "Tsuki SP", funcao: "MB", img: "img/tsukiSP.png", escola: "Karasuno", vinculo: ["Sun vs Moon"] },
-{ nome: "Tsuki SSR", funcao: "MB", img: "img/tsukiSR.png", escola: "Karasuno", vinculo: ["nothing1"] },
-{ nome: "Daichi SSR", funcao: "OP", img: "img/daichiSR.png", escola: "Karasuno", vinculo: ["nothing2"] },
-{ nome: "Azumane SSR", funcao: "WS", img: "img/azumaneSR.png", escola: "Karasuno", vinculo: ["Guardian God and Wing Spiker"] },
-{ nome: "Sugawara SP", funcao: "S", img: "img/sugawaraSP.png", escola: "Karasuno", vinculo: ["After School"] },
-{ nome: "Kenma SP", funcao: "S", img: "img/kenmaSP.png", escola: "Nekoma", vinculo: ["Cherry Blossom Viewing"] },
-{ nome: "Kenma SSR", funcao: "S", img: "img/kenmaSR.png", escola: "Nekoma", vinculo: ["Brain and Commander"] },
-{ nome: "Yaku SSR", funcao: "L", img: "img/yakuSR.png", escola: "Nekoma", vinculo: ["Educational Guidance"] },
-{ nome: "Kuro SSR", funcao: "MB", img: "img/kuroSR.png", escola: "Nekoma", vinculo: ["nothing3"] },
-{ nome: "Kuro UR", funcao: "MB", img: "img/kuroUR.png", escola: "Nekoma", vinculo: ["Brain and Commander"] },
-{ nome: "Lev SSR", funcao: "MB", img: "img/levSR.png", escola: "Nekoma", vinculo: ["Educational Guidance"] },
-{ nome: "Aone SP", funcao: "MB", img: "img/aoneSP.png", escola: "Dateko", vinculo: ["Swimming"] },
-{ nome: "Aone SSR", funcao: "MB", img: "img/aoneSR.png", escola: "Dateko", vinculo: ["The Silent and the Sarcastic"] },
-{ nome: "Futakuchi SSR", funcao: "WS", img: "img/futakuchiSR.png", escola: "Dateko", vinculo: ["The Silent and the Sarcastic" , "The New Captain and the Tall Rookie"] },
-{ nome: "Sasaya SSR", funcao: "OP", img: "img/sasayaSR.png", escola: "Dateko", vinculo: ["nothing4"] },
-{ nome: "Koganegawa SSR", funcao: "S", img: "img/koganegawaSR.png", escola: "Dateko", vinculo: ["The New Captain and the Tall Rookie"] }, 
-{ nome: "Oikawa UR", funcao: "S", img: "img/oikawaUR.png", escola: "Aoba Johsai", vinculo: ["Perfect Harmony"] },
-{ nome: "Oikawa SSR", funcao: "S", img: "img/oikawaSR.png", escola: "Aoba Johsai", vinculo: ["nothing5"] },
-{ nome: "Iwazumi SSR", funcao: "WS", img: "img/iwazumiSR.png", escola: "Aoba Johsai", vinculo: ["Perfect Harmony", "The Pack"] },
-{ nome: "Kentaro MAD DOG SSR", funcao: "OP", img: "img/kentaroSR.png", escola: "Aoba Johsai", vinculo: ["The Pack"] },
-{ nome: "Ushijima UR", funcao: "OP", img: "img/ushijimaUR.png", escola: "Shiratorizawa", vinculo: ["Besties for Life", "Absolute Champion and Steady Setter"] },
-{ nome: "Tendo SSR", funcao: "MB", img: "img/tendoSR.png", escola: "Shiratorizawa", vinculo: ["Besties for Life"] },
-{ nome: "Goshiki SSR", funcao: "WS", img: "img/goshikiSR.png", escola: "Shiratorizawa", vinculo: ["Shiratorizawa’s WS"] },
-{ nome: "Shirabu SSR", funcao: "S", img: "img/shirabuSR.png", escola: "Shiratorizawa", vinculo: ["Absolute Champion and Steady Setter"] },
-{ nome: "Semi SSR", funcao: "S", img: "img/semiSR.png", escola: "Shiratorizawa", vinculo: ["nothing6"] },
-{ nome: "Ohira SSR", funcao: "WS", img: "img/ohiraSR.png", escola: "Shiratorizawa", vinculo: ["Shiratorizawa’s WS"] },
-{ nome: "Yamagata SSR", funcao: "L", img: "img/yamagataSR.png", escola: "Shiratorizawa", vinculo: ["nothing7"] },
-{ nome: "Bokuto UR", funcao: "WS", img: "img/bokutoUR.png", escola: "Fukurodani", vinculo: ["Miracle Ace and Caring Setter"] },
-{ nome: "Bokuto SP", funcao: "WS", img: "img/bokutoSP.png", escola: "Fukurodani", vinculo: ["Swimming", "Ace Miraculous and Caring Setter"] },
-{ nome: "Akaashi SP", funcao: "S", img: "img/akaashiSP.png", escola: "Fukurodani", vinculo: ["Swimming", "Ace Miraculous and Caring Setter"] },
-{ nome: "Akaashi SSR", funcao: "S", img: "img/akaashiSR.png", escola: "Fukurodani", vinculo: ["Miracle Ace and Caring Setter"] },
-{ nome: "Konoha SSR", funcao: "OP", img: "img/konohaSR.png", escola: "Fukurodani", vinculo: ["nothing8"] },
-{ nome: "Haruki SSR", funcao: "L", img: "img/harukiSR.png", escola: "Fukurodani", vinculo: ["nothing9"] },
-{ nome: "Tatsuo SSR", funcao: "MB", img: "img/tatsuoSR.png", escola: "Fukurodani", vinculo: ["nothing10"] },
-{ nome: "Terushima SSR", funcao: "WS", img: "img/terushimaSR.png", escola: "Jozenji", vinculo: ["nothing11"] },
-{ nome: "Atsumu UR", funcao: "S", img: "img/atsumuUR.png", escola: "Inarizaki", vinculo: ["Twin Power", "Twin Heads"] },
-{ nome: "Osamu UR", funcao: "OP", img: "img/osamuUR.png", escola: "Inarizaki", vinculo: ["Twin Power", "Twin Heads"] },
-{ nome: "Kita SSR", funcao: "WS", img: "img/kitaSR.png", escola: "Inarizaki", vinculo: ["Twin Heads"] },
-{ nome: "Rintaro SSR", funcao: "MB", img: "img/rintaroSR.png", escola: "Inarizaki", vinculo: ["nothing12"] },
-{ nome: "Oshiro SSR", funcao: "WS", img: "img/oshiroSR.png", escola: "Inarizaki", vinculo: ["nothing13"] },
-{ nome: "Akagi SSR", funcao: "L", img: "img/akagiSR.png", escola: "Inarizaki", vinculo: ["nothing14"] },
-{ nome: "Yui SSR", funcao: "WS", img: "img/yuiSR.png", escola: "Inarizaki", vinculo: ["nothing15"] },
-{ nome: "Hoshiumi UR", funcao: "WS", img: "img/hoshiumiUR.png", escola: "Kamomedai", vinculo: ["Longtime Friends"] },
-{ nome: "Hirugami UR", funcao: "MB", img: "img/hirugamiUR.png", escola: "Kamomedai", vinculo: ["Longtime Friends"] },
-{ nome: "Hayaseiomi UR", funcao: "WS", img: "img/hayaseiomiUR.png", escola: "Itachiyama", vinculo: ["Top Spiker and Top Libero"] },
-{ nome: "Komori UR", funcao: "L", img: "img/komoriUR.png", escola: "Itachiyama", vinculo: ["Top Spiker and Top Libero"] },
+{ nome: "Kageyama UR", funcao: "S", img: "img/kageyamaUR.png", School: "Karasuno", vinculo: ["Eccentric Duo", "Karasuno Geniuses"] },
+{ nome: "Kageyama SSR", funcao: "S", img: "img/kageyamaSR.png", School: "Karasuno", vinculo: ["nothing"] },
+{ nome: "Hinata SP", funcao: "MB", img: "img/hinataSP.png", School: "Karasuno", vinculo: ["Eccentric Duo", "Cherry Blossom Viewing" , "Sun vs Moon"] },
+{ nome: "Hinata SSR", funcao: "MB", img: "img/hinataSR.png", School: "Karasuno", vinculo: ["Eccentric Duo"] },
+{ nome: "Nishinoya SP", funcao: "L", img: "img/nishinoyaSP.png", School: "Karasuno", vinculo: ["Karasuno Geniuses", "After School"] },
+{ nome: "Nishinoya SSR", funcao: "L", img: "img/nishinoyaSR.png", School: "Karasuno", vinculo: ["Guardian God and Wing Spiker" , "Kiyoko Squad"] },
+{ nome: "Tanaka SSR", funcao: "WS", img: "img/tanakaSR.png", School: "Karasuno", vinculo: ["Kiyoko Squad"] },
+{ nome: "Tsuki SP", funcao: "MB", img: "img/tsukiSP.png", School: "Karasuno", vinculo: ["Sun vs Moon"] },
+{ nome: "Tsuki SSR", funcao: "MB", img: "img/tsukiSR.png", School: "Karasuno", vinculo: ["nothing1"] },
+{ nome: "Daichi SSR", funcao: "OP", img: "img/daichiSR.png", School: "Karasuno", vinculo: ["nothing2"] },
+{ nome: "Azumane SSR", funcao: "WS", img: "img/azumaneSR.png", School: "Karasuno", vinculo: ["Guardian God and Wing Spiker"] },
+{ nome: "Sugawara SP", funcao: "S", img: "img/sugawaraSP.png", School: "Karasuno", vinculo: ["After School"] },
+{ nome: "Kenma SP", funcao: "S", img: "img/kenmaSP.png", School: "Nekoma", vinculo: ["Cherry Blossom Viewing"] },
+{ nome: "Kenma SSR", funcao: "S", img: "img/kenmaSR.png", School: "Nekoma", vinculo: ["Brain and Commander"] },
+{ nome: "Yaku SSR", funcao: "L", img: "img/yakuSR.png", School: "Nekoma", vinculo: ["Educational Guidance"] },
+{ nome: "Kuro SSR", funcao: "MB", img: "img/kuroSR.png", School: "Nekoma", vinculo: ["nothing3"] },
+{ nome: "Kuro UR", funcao: "MB", img: "img/kuroUR.png", School: "Nekoma", vinculo: ["Brain and Commander"] },
+{ nome: "Lev SSR", funcao: "MB", img: "img/levSR.png", School: "Nekoma", vinculo: ["Educational Guidance"] },
+{ nome: "Aone SP", funcao: "MB", img: "img/aoneSP.png", School: "Dateko", vinculo: ["Swimming"] },
+{ nome: "Aone SSR", funcao: "MB", img: "img/aoneSR.png", School: "Dateko", vinculo: ["The Silent and the Sarcastic"] },
+{ nome: "Futakuchi SSR", funcao: "WS", img: "img/futakuchiSR.png", School: "Dateko", vinculo: ["The Silent and the Sarcastic" , "The New Captain and the Tall Rookie"] },
+{ nome: "Sasaya SSR", funcao: "OP", img: "img/sasayaSR.png", School: "Dateko", vinculo: ["nothing4"] },
+{ nome: "Koganegawa SSR", funcao: "S", img: "img/koganegawaSR.png", School: "Dateko", vinculo: ["The New Captain and the Tall Rookie"] }, 
+{ nome: "Oikawa UR", funcao: "S", img: "img/oikawaUR.png", School: "Aoba Johsai", vinculo: ["Perfect Harmony"] },
+{ nome: "Oikawa SSR", funcao: "S", img: "img/oikawaSR.png", School: "Aoba Johsai", vinculo: ["nothing5"] },
+{ nome: "Iwazumi SSR", funcao: "WS", img: "img/iwazumiSR.png", School: "Aoba Johsai", vinculo: ["Perfect Harmony", "The Pack"] },
+{ nome: "Kentaro MAD DOG SSR", funcao: "OP", img: "img/kentaroSR.png", School: "Aoba Johsai", vinculo: ["The Pack"] },
+{ nome: "Ushijima UR", funcao: "OP", img: "img/ushijimaUR.png", School: "Shiratorizawa", vinculo: ["Besties for Life", "Absolute Champion and Steady Setter"] },
+{ nome: "Tendo SSR", funcao: "MB", img: "img/tendoSR.png", School: "Shiratorizawa", vinculo: ["Besties for Life"] },
+{ nome: "Goshiki SSR", funcao: "WS", img: "img/goshikiSR.png", School: "Shiratorizawa", vinculo: ["Shiratorizawa’s WS"] },
+{ nome: "Shirabu SSR", funcao: "S", img: "img/shirabuSR.png", School: "Shiratorizawa", vinculo: ["Absolute Champion and Steady Setter"] },
+{ nome: "Semi SSR", funcao: "S", img: "img/semiSR.png", School: "Shiratorizawa", vinculo: ["nothing6"] },
+{ nome: "Ohira SSR", funcao: "WS", img: "img/ohiraSR.png", School: "Shiratorizawa", vinculo: ["Shiratorizawa’s WS"] },
+{ nome: "Yamagata SSR", funcao: "L", img: "img/yamagataSR.png", School: "Shiratorizawa", vinculo: ["nothing7"] },
+{ nome: "Bokuto UR", funcao: "WS", img: "img/bokutoUR.png", School: "Fukurodani", vinculo: ["Miracle Ace and Caring Setter"] },
+{ nome: "Bokuto SP", funcao: "WS", img: "img/bokutoSP.png", School: "Fukurodani", vinculo: ["Swimming", "Ace Miraculous and Caring Setter"] },
+{ nome: "Akaashi SP", funcao: "S", img: "img/akaashiSP.png", School: "Fukurodani", vinculo: ["Swimming", "Ace Miraculous and Caring Setter"] },
+{ nome: "Akaashi SSR", funcao: "S", img: "img/akaashiSR.png", School: "Fukurodani", vinculo: ["Miracle Ace and Caring Setter"] },
+{ nome: "Konoha SSR", funcao: "OP", img: "img/konohaSR.png", School: "Fukurodani", vinculo: ["nothing8"] },
+{ nome: "Haruki SSR", funcao: "L", img: "img/harukiSR.png", School: "Fukurodani", vinculo: ["nothing9"] },
+{ nome: "Tatsuo SSR", funcao: "MB", img: "img/tatsuoSR.png", School: "Fukurodani", vinculo: ["nothing10"] },
+{ nome: "Terushima SSR", funcao: "WS", img: "img/terushimaSR.png", School: "Jozenji", vinculo: ["nothing11"] },
+{ nome: "Atsumu UR", funcao: "S", img: "img/atsumuUR.png", School: "Inarizaki", vinculo: ["Twin Power", "Twin Heads"] },
+{ nome: "Osamu UR", funcao: "OP", img: "img/osamuUR.png", School: "Inarizaki", vinculo: ["Twin Power", "Twin Heads"] },
+{ nome: "Kita SSR", funcao: "WS", img: "img/kitaSR.png", School: "Inarizaki", vinculo: ["Twin Heads"] },
+{ nome: "Rintaro SSR", funcao: "MB", img: "img/rintaroSR.png", School: "Inarizaki", vinculo: ["nothing12"] },
+{ nome: "Oshiro SSR", funcao: "WS", img: "img/oshiroSR.png", School: "Inarizaki", vinculo: ["nothing13"] },
+{ nome: "Akagi SSR", funcao: "L", img: "img/akagiSR.png", School: "Inarizaki", vinculo: ["nothing14"] },
+{ nome: "Yui SSR", funcao: "WS", img: "img/yuiSR.png", School: "Inarizaki", vinculo: ["nothing15"] },
+{ nome: "Hoshiumi UR", funcao: "WS", img: "img/hoshiumiUR.png", School: "Kamomedai", vinculo: ["Longtime Friends"] },
+{ nome: "Hirugami UR", funcao: "MB", img: "img/hirugamiUR.png", School: "Kamomedai", vinculo: ["Longtime Friends"] },
+{ nome: "Hayaseiomi UR", funcao: "WS", img: "img/hayaseiomiUR.png", School: "Itachiyama", vinculo: ["Top Spiker and Top Libero"] },
+{ nome: "Komori UR", funcao: "L", img: "img/komoriUR.png", School: "Itachiyama", vinculo: ["Top Spiker and Top Libero"] },
 
 ];
 
@@ -360,14 +360,14 @@ function atualizarSinergias() {
     const synergyListEl = document.getElementById("synergy-list");
     synergyListEl.innerHTML = "";
 
-    const escolasCount = {};
+    const SchoolsCount = {};
     const vinculosCount = {};
 
-    // Contagem de escolas (apenas titulares)
+    // Contagem de Schools (apenas titulares)
     document.querySelectorAll(".hex").forEach(slot => {
         if (slot.dataset.nome) {
             const p = personagens.find(x => x.nome === slot.dataset.nome);
-            escolasCount[p.escola] = (escolasCount[p.escola] || 0) + 1;
+            SchoolsCount[p.School] = (SchoolsCount[p.School] || 0) + 1;
         }
     });
 
@@ -386,18 +386,18 @@ function atualizarSinergias() {
 
     let algumaSinergia = false;
 
-    // Sinergia de escola (4 ou mais)
-    for (const escola in escolasCount) {
-        if (escolasCount[escola] >= 4) {
-            synergyListEl.innerHTML += `<li>Escola: ${escola} - ${descricoesSinergia[escola] || ""}</li>`;
+    // Sinergia de School (4 ou mais)
+    for (const School in SchoolsCount) {
+        if (SchoolsCount[School] >= 4) {
+            synergyListEl.innerHTML += `<li>School: ${School} - ${descricoesSinergia[School] || ""}</li>`;
             algumaSinergia = true;
         }
     }
 
-    // Sinergia de vínculo (2 ou mais)
+    // Sinergia de Bond (2 ou mais)
     for (const vinculo in vinculosCount) {
         if (vinculosCount[vinculo] >= 2) {
-            synergyListEl.innerHTML += `<li>Vínculo: ${vinculo} - ${descricoesSinergia[vinculo] || ""}</li>`;
+            synergyListEl.innerHTML += `<li>Bond: ${vinculo} - ${descricoesSinergia[vinculo] || ""}</li>`;
             algumaSinergia = true;
         }
     }
