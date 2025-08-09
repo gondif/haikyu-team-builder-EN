@@ -2,291 +2,190 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Haikyu Fly High - Team Builder</title>
+<title>Time de Vôlei</title>
 <style>
     body {
-        background-color: #222;
-        color: #fff;
         font-family: Arial, sans-serif;
-        text-align: center;
+        background: url('img/background.jpg') no-repeat center center fixed;
+        background-size: cover;
+        margin: 0;
+        padding: 0;
     }
-
-    h1 {
-        margin-top: 20px;
-    }
-
-    .team-grid {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-        align-items: center;
-        margin-top: 30px;
-    }
-
-    .row {
-        display: flex;
-        gap: 20px;
-    }
-
-    .top-row {
-        transform: translateX(6px);
-    }
-
-    .player-slot {
+    .container {
         display: flex;
         flex-direction: column;
         align-items: center;
+        gap: 30px;
+        padding: 20px;
     }
-
-    .hex {
-        position: relative;
-        width: 150px;
-        height: 210px;
-        background-color: #444;
-        border-radius: 10px;
+    .top-row, .bottom-row, .bench-row {
         display: flex;
+        justify-content: center;
+        gap: 20px;
+    }
+    .slot {
+        width: 100px;
+        height: 130px;
+        border: 2px dashed #ccc;
+        display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
+        background-color: rgba(255,255,255,0.7);
         cursor: pointer;
-        transition: background 0.3s;
-        overflow: hidden;
+        position: relative;
     }
-
-    .hex:hover {
-        background-color: #555;
+    .slot img {
+        max-width: 80px;
+        max-height: 80px;
     }
-
-    .hex img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .player-info {
-        margin-top: 5px;
-        font-size: 14px;
-        color: #fff;
+    .slot span {
+        font-size: 12px;
         text-align: center;
     }
-
-    /* Banco de reservas */
     .bench-slot {
         width: 50px;
         height: 67px;
-        background-color: #444;
-        border-radius: 5px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        overflow: hidden;
     }
-
-    .bench-slot img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .add-slot-btn {
-        background-color: #28a745;
-        border: none;
-        color: white;
-        padding: 5px 10px;
-        margin-left: 10px;
-        cursor: pointer;
-        border-radius: 5px;
-    }
-
-    .add-slot-btn:hover {
-        background-color: #218838;
-    }
-
-    #synergy-panel {
-        margin-top: 50px;
-        background-color: #333;
-        padding: 15px;
-        border-radius: 10px;
-        max-width: 600px;
-        margin-left: auto;
-        margin-right: auto;
-        text-align: left;
-    }
-
     .scroll-menu {
         display: none;
-        margin-top: 10px;
-        max-height: 200px;
+        position: absolute;
+        top: 100%;
+        background: #fff;
+        border: 1px solid #ccc;
+        max-height: 150px;
         overflow-y: auto;
-        background-color: #333;
-        padding: 10px;
-        border-radius: 8px;
-        flex-wrap: wrap;
+        z-index: 10;
+        width: 120px;
     }
-
-    .scroll-menu img {
-        width: 80px;
-        height: auto;
-        cursor: grab;
-        margin: 5px;
-        border: 2px solid transparent;
+    .scroll-menu div {
+        display: flex;
+        align-items: center;
+        padding: 5px;
+        cursor: pointer;
     }
-
-    .scroll-menu img:hover {
-        border: 2px solid yellow;
+    .scroll-menu div img {
+        max-width: 30px;
+        max-height: 30px;
+        margin-right: 5px;
+    }
+    .scroll-menu div:hover {
+        background: #eee;
+    }
+    .add-bench-btn {
+        margin-top: 10px;
+        padding: 5px 10px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        cursor: pointer;
     }
 </style>
 </head>
 <body>
-
-<h1>Haikyu!! Fly High - Team Builder</h1>
-
-<div class="team-grid">
-    <div class="row top-row">
-        <div class="player-slot"><div class="hex" data-role="S"></div><div class="player-info">S</div></div>
-        <div class="player-slot"><div class="hex" data-role="MB"></div><div class="player-info">MB</div></div>
-        <div class="player-slot"><div class="hex" data-role="WS"></div><div class="player-info">WS</div></div>
+<div class="container">
+    <div class="top-row">
+        <div class="slot" data-pos="Setter"><span>Selecionar jogador</span></div>
+        <div class="slot" data-pos="Middle Blocker"><span>Selecionar jogador</span></div>
+        <div class="slot" data-pos="Wing Spiker"><span>Selecionar jogador</span></div>
     </div>
-    <div class="row">
-        <div class="player-slot"><div class="hex" data-role="L"></div><div class="player-info">L</div></div>
-        <div class="player-slot"><div class="hex" data-role="WS"></div><div class="player-info">WS</div></div>
-        <div class="player-slot"><div class="hex" data-role="MB"></div><div class="player-info">MB</div></div>
-        <div class="player-slot"><div class="hex" data-role="OP"></div><div class="player-info">OP</div></div>
+    <div class="bottom-row">
+        <div class="slot" data-pos="Libero"><span>Selecionar jogador</span></div>
+        <div class="slot" data-pos="Wing Spiker"><span>Selecionar jogador</span></div>
+        <div class="slot" data-pos="Middle Blocker"><span>Selecionar jogador</span></div>
+        <div class="slot" data-pos="Opposite"><span>Selecionar jogador</span></div>
     </div>
-    <div class="row" id="bench-row">
-        <div class="player-slot bench"><div class="bench-slot" data-role="bench"></div><div class="player-info">Banco</div></div>
-        <div class="player-slot bench"><div class="bench-slot" data-role="bench"></div><div class="player-info">Banco</div></div>
-        <div class="player-slot bench"><div class="bench-slot" data-role="bench"></div><div class="player-info">Banco</div></div>
-        <button class="add-slot-btn" onclick="addBenchSlot()">+</button>
+    <div class="bench-row" id="benchRow">
+        <div class="slot bench-slot" data-pos="Bench"><span>Banco</span></div>
+        <div class="slot bench-slot" data-pos="Bench"><span>Banco</span></div>
+        <div class="slot bench-slot" data-pos="Bench"><span>Banco</span></div>
     </div>
-</div>
-
-<div class="scroll-menu" id="scrollMenu"></div>
-
-<div id="synergy-panel">
-    <h2>Sinergias Ativas</h2>
-    <ul id="synergy-list"><li>Nenhuma sinergia ativa</li></ul>
+    <button class="add-bench-btn" id="addBench">Adicionar slot banco</button>
 </div>
 
 <script>
-const personagens = [
-    { nome: "Tobio Kageyama", funcao: "S", img: "img/kageyamaUR.png", escola: "Karasuno", vinculo: "Freak Quick" },
-    { nome: "Kōshi Sugawara", funcao: "S", img: "img/sugawara.png", escola: "Karasuno", vinculo: "Suporte" },
-    { nome: "Kenma Kozume", funcao: "S", img: "img/kenmaSP.png", escola: "Nekoma", vinculo: "Time Nekoma" },
-    { nome: "Toru Oikawa", funcao: "S", img: "img/oikawaUR.png", escola: "Aoba Johsai", vinculo: "Parceria Iwaizumi" },
-    { nome: "Shoyo Hinata", funcao: "MB", img: "img/hinataSP.png", escola: "Karasuno", vinculo: "Freak Quick" },
-    { nome: "Tetsurō Kuroo", funcao: "MB", img: "img/kurooUR.png", escola: "Nekoma", vinculo: "Time Nekoma" },
-    { nome: "Kei Tsukishima", funcao: "MB", img: "img/tsukiSP.png", escola: "Karasuno", vinculo: "Dupla Yamaguchi" },
-    { nome: "Takanobu Aone", funcao: "MB", img: "img/aone.png", escola: "Date Tech", vinculo: "Paredão de Ferro" },
-    { nome: "Wakatoshi Ushijima", funcao: "WS", img: "img/ushijima.png", escola: "Shiratorizawa", vinculo: "Capitão" },
-    { nome: "Hajime Iwaizumi", funcao: "WS", img: "img/iwaizumiSR.png", escola: "Aoba Johsai", vinculo: "Parceria Oikawa" },
-    { nome: "Ryūnosuke Tanaka", funcao: "WS", img: "img/tanaka.png", escola: "Karasuno", vinculo: "Dupla Nishinoya" },
-    { nome: "Kentarō Kyōtani", funcao: "OP", img: "img/kyotani.png", escola: "Aoba Johsai", vinculo: "Time Aoba Johsai" },
-    { nome: "Asahi Azumane", funcao: "WS", img: "img/asahi.png", escola: "Karasuno", vinculo: "Time Karasuno" },
-    { nome: "Daichi Sawamura", funcao: "OP", img: "img/daichiSR.png", escola: "Karasuno", vinculo: "Capitão" },
-    { nome: "Yū Nishinoya", funcao: "L", img: "img/nishinoyaSP.png", escola: "Karasuno", vinculo: "Dupla Tanaka" },
-    { nome: "Tadashi Yamaguchi", funcao: "MB", img: "img/yamaguchi.png", escola: "Karasuno", vinculo: "Dupla Tsukishima" },
-    { nome: "Issei Matsukawa", funcao: "MB", img: "img/matsukawa.png", escola: "Aoba Johsai", vinculo: "Time Aoba Johsai" }
+const players = [
+    { name: "Atsumu Miya", role: "Setter", img: "img/atsumuUR.png" },
+    { name: "Kageyama Tobio", role: "Setter", img: "img/kageyama.png" },
+    { name: "Nishinoya Yuu", role: "Libero", img: "img/nishinoya.png" },
+    { name: "Bokuto Koutarou", role: "Wing Spiker", img: "img/bokuto.png" },
+    { name: "Hinata Shoyo", role: "Middle Blocker", img: "img/hinata.png" },
+    { name: "Sakusa Kiyoomi", role: "Opposite", img: "img/sakusa.png" },
+    { name: "Kuroo Tetsurou", role: "Middle Blocker", img: "img/kuroo.png" }
 ];
 
-let selecionados = [];
+let selectedPlayers = {};
 
-function addBenchSlot() {
-    const benchRow = document.getElementById("bench-row");
-    const slot = document.createElement("div");
-    slot.className = "player-slot bench";
-    slot.innerHTML = `<div class="bench-slot" data-role="bench"></div><div class="player-info">Banco</div>`;
-    benchRow.insertBefore(slot, benchRow.querySelector(".add-slot-btn"));
-    attachBenchEvents(slot.querySelector(".bench-slot"));
-}
+function createScrollMenu(slot, pos) {
+    const menu = document.createElement("div");
+    menu.classList.add("scroll-menu");
 
-function attachBenchEvents(slot) {
-    slot.addEventListener("click", () => mostrarMenu("bench", slot));
-}
+    let availablePlayers = players.filter(p => 
+        !Object.values(selectedPlayers).includes(p.name) && 
+        (pos === "Bench" || p.role === pos)
+    );
 
-function mostrarMenu(role, slot) {
-    scrollMenu.innerHTML = '';
-    let disponiveis;
-
-    if (role === "bench") {
-        disponiveis = personagens.filter(p => !selecionados.includes(p) && respeitaLimiteBanco(p, slot));
-    } else {
-        disponiveis = personagens.filter(p => p.funcao === role && !selecionados.includes(p));
-    }
-
-    disponiveis.forEach(p => {
-        const img = document.createElement('img');
-        img.src = p.img;
-        img.alt = p.nome;
-        img.title = p.nome;
-        img.addEventListener('click', () => {
-            setPersonagem(slot, p, role);
-            scrollMenu.style.display = 'none';
+    availablePlayers.forEach(player => {
+        const option = document.createElement("div");
+        option.innerHTML = `<img src="${player.img}"><span>${player.name}</span>`;
+        option.addEventListener("click", () => {
+            selectPlayer(slot, player);
+            menu.style.display = "none";
         });
-        scrollMenu.appendChild(img);
+        menu.appendChild(option);
     });
 
-    scrollMenu.style.display = 'flex';
+    slot.appendChild(menu);
 }
 
-function respeitaLimiteBanco(p, slot) {
-    const banco = Array.from(document.querySelectorAll(".bench-slot"))
-        .map(s => s.dataset.nome && personagens.find(x => x.nome === s.dataset.nome))
-        .filter(Boolean);
+function selectPlayer(slot, player) {
+    const pos = slot.getAttribute("data-pos");
+    selectedPlayers[slot] = player.name;
 
-    if (slot.dataset.nome === p.nome) return true;
-
-    const contagem = banco.reduce((acc, cur) => {
-        acc[cur.funcao] = (acc[cur.funcao] || 0) + 1;
-        return acc;
-    }, {});
-
-    if (p.funcao === "MB" && contagem["MB"] >= 2) return false;
-    if (p.funcao === "WS" && contagem["WS"] >= 2) return false;
-    if (["S", "L", "OP"].includes(p.funcao) && contagem[p.funcao] >= 1) return false;
-
-    return true;
+    slot.innerHTML = `<img src="${player.img}"><span>${player.name}</span><span>${player.role}</span>`;
 }
 
-function setPersonagem(slot, personagem, role) {
-    if (slot.dataset.nome) {
-        selecionados = selecionados.filter(p => p.nome !== slot.dataset.nome);
+function removePlayer(slot) {
+    const pos = slot.getAttribute("data-pos");
+    const prevName = selectedPlayers[slot];
+    if (prevName) {
+        delete selectedPlayers[slot];
+        slot.innerHTML = `<span>${pos === "Bench" ? "Banco" : "Selecionar jogador"}</span>`;
     }
-
-    slot.innerHTML = `<img src="${personagem.img}" alt="${personagem.nome}">`;
-    slot.dataset.nome = personagem.nome;
-
-    const infoDiv = slot.parentElement.querySelector('.player-info');
-    infoDiv.textContent = `${personagem.nome} - ${personagem.funcao}`;
-
-    selecionados.push(personagem);
-    atualizarSinergias();
 }
 
-function atualizarSinergias() {
-    synergyList.innerHTML = "";
-    const escolas = new Set();
-    const vinculos = new Set();
+document.querySelectorAll(".slot").forEach(slot => {
+    const pos = slot.getAttribute("data-pos");
+    createScrollMenu(slot, pos);
 
-    document.querySelectorAll(".hex, .bench-slot").forEach(slot => {
-        if (slot.dataset.nome) {
-            const p = personagens.find(x => x.nome === slot.dataset.nome);
-            if (!slot.classList.contains("bench-slot")) escolas.add(p.escola);
-            vinculos.add(p.vinculo);
-        }
+    slot.addEventListener("click", () => {
+        const menu = slot.querySelector(".scroll-menu");
+        menu.style.display = menu.style.display === "block" ? "none" : "block";
     });
 
-    escolas.forEach(e => synergyList.innerHTML += `<li>Escola: ${e}</li>`);
-    vinculos.forEach(v => synergyList.innerHTML += `<li>Vínculo: ${v}</li>`);
-}
-
-document.querySelectorAll(".hex").forEach(slot => {
-    slot.addEventListener("click", () => mostrarMenu(slot.dataset.role, slot));
+    slot.addEventListener("contextmenu", e => {
+        e.preventDefault();
+        removePlayer(slot);
+    });
 });
 
-document.querySelectorAll(".bench-slot").forEach(slot => attachBenchEvents(slot));
+document.getElementById("addBench").addEventListener("click", () => {
+    const newSlot = document.createElement("div");
+    newSlot.classList.add("slot", "bench-slot");
+    newSlot.setAttribute("data-pos", "Bench");
+    newSlot.innerHTML = "<span>Banco</span>";
+    createScrollMenu(newSlot, "Bench");
+    newSlot.addEventListener("click", () => {
+        const menu = newSlot.querySelector(".scroll-menu");
+        menu.style.display = menu.style.display === "block" ? "none" : "block";
+    });
+    newSlot.addEventListener("contextmenu", e => {
+        e.preventDefault();
+        removePlayer(newSlot);
+    });
+    document.getElementById("benchRow").appendChild(newSlot);
+});
 </script>
-
 </body>
 </html>
 
