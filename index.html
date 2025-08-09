@@ -170,14 +170,14 @@
 
 <script>
 const personagens = [
-    { nome: "Kageyama UR", funcao: "S", img: "img/kageyamaUR.png", escola: "Karasuno", vinculo: "" },
+    { nome: "Kageyama UR", funcao: "S", img: "img/kageyamaUR.png", escola: "Karasuno", vinculo: "x" },
     { nome: "Kageyama SSR", funcao: "S", img: "img/kageyamaSR.png", escola: "Karasuno", vinculo: "" },
-    { nome: "Hinata SP", funcao: "MB", img: "img/hinataSP.png", escola: "Karasuno", vinculo: "" },
-    { nome: "Hinata SSR", funcao: "MB", img: "img/hinataSR.png", escola: "Karasuno", vinculo: "" },
-    { nome: "Nishinoya SP", funcao: "L", img: "img/nishinoyaSP.png", escola: "Karasuno", vinculo: "" },
+    { nome: "Hinata SP", funcao: "MB", img: "img/hinataSP.png", escola: "Karasuno", vinculo: "x" },
+    { nome: "Hinata SSR", funcao: "MB", img: "img/hinataSR.png", escola: "Karasuno", vinculo: "x" },
+    { nome: "Nishinoya SP", funcao: "L", img: "img/nishinoyaSP.png", escola: "Karasuno", vinculo: "y" },
     { nome: "Nishinoya SSR", funcao: "L", img: "img/nishinoyaSR.png", escola: "Karasuno", vinculo: "" },
-    { nome: "Tsuki SP", funcao: "MB", img: "img/tsukiSP.png", escola: "Karasuno", vinculo: "" },
-    { nome: "Tsuki SSR", funcao: "MB", img: "img/tsukiSR.png", escola: "Karasuno", vinculo: "" },
+    { nome: "Tsuki SP", funcao: "MB", img: "img/tsukiSP.png", escola: "Karasuno", vinculo: "y" },
+    { nome: "Tsuki SSR", funcao: "MB", img: "img/tsukiSR.png", escola: "Karasuno", vinculo: "y" },
     { nome: "Daichi SSR", funcao: "OP", img: "img/daichiSR.png", escola: "Karasuno", vinculo: "" },
     { nome: "Azumane SSR", funcao: "WS", img: "img/azumaneSR.png", escola: "Karasuno", vinculo: "" },
     { nome: "Sugawara SP", funcao: "S", img: "img/sugawaraSP.png", escola: "Karasuno", vinculo: "" },
@@ -321,20 +321,49 @@ function removerPersonagem(slot) {
 }
 
 function atualizarSinergias() {
-    synergyList.innerHTML = "";
-    const escolas = new Set();
-    const vinculos = new Set();
+    const synergyListEl = document.getElementById("synergy-list");
+    synergyListEl.innerHTML = "";
 
-    document.querySelectorAll(".hex, .bench-slot").forEach(slot => {
+    const escolasCount = {};
+    const vinculosCount = {};
+
+    // Contagem de escolas (apenas titulares)
+    document.querySelectorAll(".hex").forEach(slot => {
         if (slot.dataset.nome) {
             const p = personagens.find(x => x.nome === slot.dataset.nome);
-            if (!slot.classList.contains("bench-slot")) escolas.add(p.escola);
-            vinculos.add(p.vinculo);
+            escolasCount[p.escola] = (escolasCount[p.escola] || 0) + 1;
         }
     });
 
-    escolas.forEach(e => synergyList.innerHTML += `<li>Escola: ${e}</li>`);
-    vinculos.forEach(v => synergyList.innerHTML += `<li>Vínculo: ${v}</li>`);
+    // Contagem de vínculos (titulares + banco)
+    document.querySelectorAll(".hex, .bench-slot").forEach(slot => {
+        if (slot.dataset.nome) {
+            const p = personagens.find(x => x.nome === slot.dataset.nome);
+            vinculosCount[p.vinculo] = (vinculosCount[p.vinculo] || 0) + 1;
+        }
+    });
+
+    let algumaSinergia = false;
+
+    // Sinergia de escola (4 ou mais)
+    for (const escola in escolasCount) {
+        if (escolasCount[escola] >= 4) {
+            synergyListEl.innerHTML += `<li>Sinergia de Escola: ${escola} (${escolasCount[escola]} jogadores)</li>`;
+            algumaSinergia = true;
+        }
+    }
+
+    // Sinergia de vínculo (2 ou mais)
+    for (const vinculo in vinculosCount) {
+        if (vinculosCount[vinculo] >= 2) {
+            synergyListEl.innerHTML += `<li>Sinergia de Vínculo: ${vinculo} (${vinculosCount[vinculo]} jogadores)</li>`;
+            algumaSinergia = true;
+        }
+    }
+
+    if (!algumaSinergia) {
+        synergyListEl.innerHTML = "<li>Nenhuma sinergia ativa</li>";
+    }
 }
 
 document.querySelectorAll(".hex").forEach(slot => {
