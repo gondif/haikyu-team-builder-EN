@@ -39,11 +39,11 @@
         align-items: center;
     }
 
-    /* Mudança para retângulo */
+    /* Slots principais */
     .hex {
         position: relative;
         width: 150px;
-        height: 210px; /* mais alto para a imagem */
+        height: 210px;
         background-color: #444;
         border-radius: 10px;
         display: flex;
@@ -61,9 +61,34 @@
     .hex img {
         width: 100%;
         height: 100%;
-        object-fit: cover; /* mantém a imagem bem ajustada */
+        object-fit: cover;
     }
 
+    /* Slots do banco */
+    .bench-slot {
+        width: 50px;
+        height: 67px;
+        background-color: #444;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        overflow: hidden;
+        transition: background 0.3s;
+    }
+
+    .bench-slot:hover {
+        background-color: #555;
+    }
+
+    .bench-slot img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Texto abaixo dos slots */
     .player-info {
         margin-top: 5px;
         font-size: 14px;
@@ -142,6 +167,21 @@
             <div class="player-info">OP</div>
         </div>
     </div>
+    <!-- Banco -->
+    <div class="row" id="bench-row" style="margin-top:40px;">
+        <div class="player-slot">
+            <div class="bench-slot" data-role="bench"></div>
+            <div class="player-info">Banco</div>
+        </div>
+        <div class="player-slot">
+            <div class="bench-slot" data-role="bench"></div>
+            <div class="player-info">Banco</div>
+        </div>
+        <div class="player-slot">
+            <div class="bench-slot" data-role="bench"></div>
+            <div class="player-info">Banco</div>
+        </div>
+    </div>
 </div>
 
 <div class="scroll-menu" id="scrollMenu"></div>
@@ -175,39 +215,28 @@ const personagens = [
 ];
 
 const hexes = document.querySelectorAll('.hex');
+const benchSlots = document.querySelectorAll('.bench-slot');
 const synergyList = document.getElementById('synergy-list');
 const scrollMenu = document.getElementById('scrollMenu');
 let selecionados = [];
+let banco = [];
 
-hexes.forEach(hex => {
-    hex.addEventListener('click', () => {
-        const role = hex.getAttribute('data-role');
-        mostrarMenu(role, hex);
-    });
-
-    hex.addEventListener('dragover', e => e.preventDefault());
-    hex.addEventListener('drop', e => {
-        e.preventDefault();
-        const nome = e.dataTransfer.getData('text');
-        const escolhido = personagens.find(p => p.nome === nome);
-        if (escolhido) {
-            setPersonagemNoHex(hex, escolhido);
-        }
-    });
-});
-
-function mostrarMenu(role, hex) {
+function mostrarMenu(role, hex, isBench = false) {
     scrollMenu.innerHTML = '';
-    const disponiveis = personagens.filter(p => p.funcao === role);
+    const disponiveis = personagens.filter(p => isBench ? true : p.funcao === role);
     disponiveis.forEach(p => {
         const img = document.createElement('img');
         img.src = p.img;
         img.alt = p.nome;
         img.draggable = true;
         img.title = p.nome;
-        img.addEventListener('click', () => setPersonagemNoHex(hex, p));
+        img.addEventListener('click', () => {
+            if (isBench) setBanco(hex, p);
+            else setPersonagemNoHex(hex, p);
+        });
         img.addEventListener('dragstart', e => {
             e.dataTransfer.setData('text', p.nome);
+            e.dataTransfer.setData('isBench', isBench);
         });
         scrollMenu.appendChild(img);
     });
@@ -215,7 +244,7 @@ function mostrarMenu(role, hex) {
 }
 
 function setPersonagemNoHex(hex, personagem) {
-    const playerSlot = hex.parentElement; // div.player-slot
+    const playerSlot = hex.parentElement;
     hex.innerHTML = `<img src="${personagem.img}" alt="${personagem.nome}">`;
     const infoDiv = playerSlot.querySelector('.player-info');
     infoDiv.textContent = `${personagem.nome} - ${personagem.funcao}`;
@@ -223,152 +252,58 @@ function setPersonagemNoHex(hex, personagem) {
     atualizarSinergias();
 }
 
+function setBanco(hex, personagem) {
+    const countRole = banco.filter(p => p.funcao === personagem.funcao).length;
+    if ((personagem.funcao === "MB" || personagem.funcao === "WS") && countRole >= 2) {
+        alert(`Não é possível adicionar mais de 2 ${personagem.funcao} no banco`);
+        return;
+    }
+    if (personagem.funcao !== "MB" && personagem.funcao !== "WS" && countRole >= 1) {
+        alert(`Não é possível adicionar mais de 1 ${personagem.funcao} no banco`);
+        return;
+    }
+    const playerSlot = hex.parentElement;
+    hex.innerHTML = `<img src="${personagem.img}" alt="${personagem.nome}">`;
+    const infoDiv = playerSlot.querySelector('.player-info');
+    infoDiv.textContent = `${personagem.nome} - ${personagem.funcao}`;
+    banco.push(personagem);
+    atualizarSinergias();
+}
+
 function atualizarSinergias() {
     synergyList.innerHTML = "";
     const escolas = new Set();
     const vinculos = new Set();
+
+    // Titulares contam para escola + vínculo
     selecionados.forEach(p => {
         escolas.add(p.escola);
         vinculos.add(p.vinculo);
     });
+
+    // Banco conta só para vínculo
+    banco.forEach(p => vinculos.add(p.vinculo));
+
     escolas.forEach(e => synergyList.innerHTML += `<li>Escola: ${e}</li>`);
     vinculos.forEach(v => synergyList.innerHTML += `<li>Vínculo: ${v}</li>`);
 }
-    
-    /* Banco de reservas */
-    .bench-row {
-        display: flex;
-        gap: 10px;
-        margin-top: 40px; /* espaçamento da segunda linha */
-        align-items: center;
-    }
 
-    .bench-slot {
-        width: 50px;
-        height: 67px;
-        background-color: #555;
-        border-radius: 6px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        overflow: hidden;
-    }
-
-    .bench-slot img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .add-bench-btn {
-        background-color: #888;
-        border: none;
-        padding: 5px 10px;
-        color: #fff;
-        cursor: pointer;
-        border-radius: 5px;
-        font-size: 12px;
-    }
-</style>
-
-<div class="bench-row" id="benchRow">
-    <div class="bench-slot" data-role="bench"></div>
-    <div class="bench-slot" data-role="bench"></div>
-    <div class="bench-slot" data-role="bench"></div>
-    <button class="add-bench-btn" id="addBenchBtn">+ Slot</button>
-</div>
-
-<script>
-    const benchRow = document.getElementById('benchRow');
-    const addBenchBtn = document.getElementById('addBenchBtn');
-    let benchPlayers = [];
-
-    addBenchBtn.addEventListener('click', () => {
-        const newSlot = document.createElement('div');
-        newSlot.classList.add('bench-slot');
-        newSlot.setAttribute('data-role', 'bench');
-        benchRow.insertBefore(newSlot, addBenchBtn);
-        configurarBenchSlot(newSlot);
+// Eventos titulares
+hexes.forEach(hex => {
+    hex.addEventListener('click', () => {
+        const role = hex.getAttribute('data-role');
+        mostrarMenu(role, hex);
     });
+});
 
-    function configurarBenchSlot(slot) {
-        slot.addEventListener('click', () => {
-            mostrarMenuBanco(slot);
-        });
-
-        slot.addEventListener('dragover', e => e.preventDefault());
-        slot.addEventListener('drop', e => {
-            e.preventDefault();
-            const nome = e.dataTransfer.getData('text');
-            const escolhido = personagens.find(p => p.nome === nome);
-            if (escolhido && podeAdicionarNoBanco(escolhido.funcao)) {
-                setPersonagemNoBanco(slot, escolhido);
-            } else {
-                alert("Limite de posição no banco atingido!");
-            }
-        });
-    }
-
-    document.querySelectorAll('.bench-slot').forEach(configurarBenchSlot);
-
-    function mostrarMenuBanco(slot) {
-        scrollMenu.innerHTML = '';
-        personagens.forEach(p => {
-            const img = document.createElement('img');
-            img.src = p.img;
-            img.alt = p.nome;
-            img.draggable = true;
-            img.title = `${p.nome} - ${p.funcao}`;
-            img.addEventListener('click', () => {
-                if (podeAdicionarNoBanco(p.funcao)) {
-                    setPersonagemNoBanco(slot, p);
-                } else {
-                    alert("Limite de posição no banco atingido!");
-                }
-            });
-            img.addEventListener('dragstart', e => {
-                e.dataTransfer.setData('text', p.nome);
-            });
-            scrollMenu.appendChild(img);
-        });
-        scrollMenu.style.display = 'flex';
-    }
-
-    function podeAdicionarNoBanco(funcao) {
-        const counts = {};
-        benchPlayers.forEach(p => counts[p.funcao] = (counts[p.funcao] || 0) + 1);
-
-        if (funcao === 'MB' && (counts['MB'] || 0) >= 2) return false;
-        if (funcao === 'WS' && (counts['WS'] || 0) >= 2) return false;
-        if (funcao !== 'MB' && funcao !== 'WS' && (counts[funcao] || 0) >= 1) return false;
-        return true;
-    }
-
-    function setPersonagemNoBanco(slot, personagem) {
-        slot.innerHTML = `<img src="${personagem.img}" alt="${personagem.nome}">`;
-        benchPlayers.push(personagem);
-        atualizarSinergias(); // ainda usa vínculo
-    }
-
-    // Alterar atualização de sinergia para ignorar banco na escola
-    function atualizarSinergias() {
-        synergyList.innerHTML = "";
-        const escolas = new Set();
-        const vinculos = new Set();
-
-        selecionados.forEach(p => {
-            escolas.add(p.escola);
-            vinculos.add(p.vinculo);
-        });
-        benchPlayers.forEach(p => {
-            vinculos.add(p.vinculo); // só vínculo do banco
-        });
-
-        escolas.forEach(e => synergyList.innerHTML += `<li>Escola: ${e}</li>`);
-        vinculos.forEach(v => synergyList.innerHTML += `<li>Vínculo: ${v}</li>`);
-    }
+// Eventos banco
+benchSlots.forEach(hex => {
+    hex.addEventListener('click', () => {
+        mostrarMenu(null, hex, true);
+    });
+});
 </script>
 
 </body>
 </html>
+
