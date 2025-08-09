@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Haikyu Fly High - Team Builder</title>
-<style>
-      body {
+    <title>Haikyu!! Fly High - Team Builder</title>
+    <style>
+        body {
             background-color: #222;
             color: white;
             font-family: Arial, sans-serif;
@@ -24,6 +24,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            cursor: pointer;
         }
         .position {
             font-weight: bold;
@@ -34,7 +35,6 @@
             height: 55px;
             background-color: #444;
             position: relative;
-            margin: 0;
         }
         .hexagon:before,
         .hexagon:after {
@@ -56,155 +56,92 @@
             font-weight: bold;
             margin-top: 5px;
         }
+        .synergy {
+            margin-top: 30px;
+            padding: 10px;
+            background-color: #333;
+            display: none;
+        }
     </style>
 </head>
 <body>
     <h1>Haikyu!! Fly High - Team Builder</h1>
-    <div class="team-grid">
-        <div class="slot"><div class="position">S</div><div class="hexagon"></div><div class="name">NOME</div></div>
-        <div class="slot"><div class="position">MB</div><div class="hexagon"></div><div class="name">NOME</div></div>
-        <div class="slot"><div class="position">WS</div><div class="hexagon"></div><div class="name">NOME</div></div>
-        <div class="slot"><div class="position">OP</div><div class="hexagon"></div><div class="name">NOME</div></div>
+    <div class="team-grid" id="team">
+        <div class="slot" data-position="S"><div class="position">S</div><div class="hexagon"></div><div class="name">NOME</div></div>
+        <div class="slot" data-position="MB"><div class="position">MB</div><div class="hexagon"></div><div class="name">NOME</div></div>
+        <div class="slot" data-position="WS"><div class="position">WS</div><div class="hexagon"></div><div class="name">NOME</div></div>
+        <div class="slot" data-position="OP"><div class="position">OP</div><div class="hexagon"></div><div class="name">NOME</div></div>
 
-        <div class="slot"><div class="position">L</div><div class="hexagon"></div><div class="name">NOME</div></div>
-        <div class="slot"><div class="position">MB</div><div class="hexagon"></div><div class="name">NOME</div></div>
-        <div class="slot"><div class="position">WS</div><div class="hexagon"></div><div class="name">NOME</div></div>
-        <div class="slot"><div class="position"></div><div class="hexagon"></div><div class="name"></div></div>
+        <div class="slot" data-position="L"><div class="position">L</div><div class="hexagon"></div><div class="name">NOME</div></div>
+        <div class="slot" data-position="MB"><div class="position">MB</div><div class="hexagon"></div><div class="name">NOME</div></div>
+        <div class="slot" data-position="WS"><div class="position">WS</div><div class="hexagon"></div><div class="name">NOME</div></div>
+        <div class="slot" data-position=""><div class="position"></div><div class="hexagon"></div><div class="name"></div></div>
     </div>
-</body>
 
-<h1>Haikyu!! Fly High - Team Builder</h1>
+    <div id="synergy" class="synergy"></div>
 
-<div class="team-layout" id="team">
-    <div class="hex" data-role="Setter"><span class="role-label">Setter</span></div>
-    <div class="hex" data-role="Wing Spiker"><span class="role-label">Wing Spiker</span></div>
-    <div class="hex" data-role="Middle Blocker"><span class="role-label">Middle Blocker</span></div>
-    <div class="hex" data-role="Libero"><span class="role-label">Libero</span></div>
-    <div class="hex" data-role="Wing Spiker"><span class="role-label">Wing Spiker</span></div>
-    <div class="hex" data-role="Middle Blocker"><span class="role-label">Middle Blocker</span></div>
-    <div class="hex" data-role="Opposite"><span class="role-label">Opposite</span></div>
-</div>
+    <script>
+        const slots = document.querySelectorAll('.slot');
+        const synergyBox = document.getElementById('synergy');
 
-<div class="scroll-menu" id="scrollMenu"></div>
+        // Lista de personagens com suas escolas
+        const characters = [
+            { name: "Hinata", school: "Karasuno" },
+            { name: "Kageyama", school: "Karasuno" },
+            { name: "Tsukishima", school: "Karasuno" },
+            { name: "Nishinoya", school: "Karasuno" },
+            { name: "Oikawa", school: "Aoba Johsai" },
+            { name: "Iwaizumi", school: "Aoba Johsai" },
+            { name: "Kuroo", school: "Nekoma" },
+            { name: "Kenma", school: "Nekoma" }
+        ];
 
-<div id="synergy-panel">
-    <h2>Sinergias Ativas</h2>
-    <ul id="synergy-list">
-        <li>Nenhuma sinergia ativa</li>
-    </ul>
-</div>
+        // Lista de sinergias de vínculo (pares)
+        const bondSynergies = [
+            { players: ["Hinata", "Kageyama"], text: "Sinergia de Rivalidade Amigável" },
+            { players: ["Kuroo", "Kenma"], text: "Sinergia de Amizade de Infância" }
+        ];
 
-<script>
-const personagens = [
-    { nome: "Tobio Kageyama", funcao: "Setter", img: "img/kageyamaUR.png", escola: "Karasuno", vinculo: "Freak Quick" },
-    { nome: "Kōshi Sugawara", funcao: "Setter", img: "img/sugawara.png", escola: "Karasuno", vinculo: "Suporte" },
-    { nome: "Kenma Kozume", funcao: "Setter", img: "img/kenmaSP.png", escola: "Nekoma", vinculo: "Time Nekoma" },
-    { nome: "Toru Oikawa", funcao: "Setter", img: "img/oikawa.png", escola: "Aoba Johsai", vinculo: "Parceria Iwaizumi" },
-    { nome: "Shoyo Hinata", funcao: "Middle Blocker", img: "img/hinataSP.png", escola: "Karasuno", vinculo: "Freak Quick" },
-    { nome: "Tetsurō Kuroo", funcao: "Middle Blocker", img: "img/kuroo.png", escola: "Nekoma", vinculo: "Time Nekoma" },
-    { nome: "Kei Tsukishima", funcao: "Middle Blocker", img: "img/tsukishima.png", escola: "Karasuno", vinculo: "Dupla Yamaguchi" },
-    { nome: "Takanobu Aone", funcao: "Middle Blocker", img: "img/aone.png", escola: "Date Tech", vinculo: "Paredão de Ferro" },
-    { nome: "Wakatoshi Ushijima", funcao: "Wing Spiker", img: "img/ushijima.png", escola: "Shiratorizawa", vinculo: "Capitão" },
-    { nome: "Hajime Iwaizumi", funcao: "Wing Spiker", img: "img/iwaizumi.png", escola: "Aoba Johsai", vinculo: "Parceria Oikawa" },
-    { nome: "Ryūnosuke Tanaka", funcao: "Wing Spiker", img: "img/tanaka.png", escola: "Karasuno", vinculo: "Dupla Nishinoya" },
-    { nome: "Kentarō Kyōtani", funcao: "Opposite", img: "img/kyotani.png", escola: "Aoba Johsai", vinculo: "Time Aoba Johsai" },
-    { nome: "Asahi Azumane", funcao: "Wing Spiker", img: "img/asahi.png", escola: "Karasuno", vinculo: "Time Karasuno" },
-    { nome: "Daichi Sawamura", funcao: "Opposite", img: "img/daichi.png", escola: "Karasuno", vinculo: "Capitão" },
-    { nome: "Yū Nishinoya", funcao: "Libero", img: "img/nishinoya.png", escola: "Karasuno", vinculo: "Dupla Tanaka" },
-    { nome: "Tadashi Yamaguchi", funcao: "Middle Blocker", img: "img/yamaguchi.png", escola: "Karasuno", vinculo: "Dupla Tsukishima" },
-    { nome: "Issei Matsukawa", funcao: "Middle Blocker", img: "img/matsukawa.png", escola: "Aoba Johsai", vinculo: "Time Aoba Johsai" }
-];
-
-const hexes = document.querySelectorAll('.hex');
-const synergyList = document.getElementById('synergy-list');
-const scrollMenu = document.getElementById('scrollMenu');
-let selecionados = [];
-
-hexes.forEach(hex => {
-    hex.addEventListener('click', () => {
-        const role = hex.getAttribute('data-role');
-        mostrarMenu(role, hex);
-    });
-
-    // Permitir soltar personagens
-    hex.addEventListener('dragover', e => e.preventDefault());
-    hex.addEventListener('drop', e => {
-        e.preventDefault();
-        const nome = e.dataTransfer.getData('text');
-        const escolhido = personagens.find(p => p.nome === nome);
-        if (escolhido) {
-            setPersonagemNoHex(hex, escolhido);
-        }
-    });
-});
-
-function mostrarMenu(role, hex) {
-    scrollMenu.innerHTML = '';
-    const disponiveis = personagens.filter(p => p.funcao === role);
-    disponiveis.forEach(p => {
-        const img = document.createElement('img');
-        img.src = p.img;
-        img.alt = p.nome;
-        img.draggable = true;
-        img.title = p.nome;
-        img.addEventListener('click', () => setPersonagemNoHex(hex, p));
-        img.addEventListener('dragstart', e => {
-            e.dataTransfer.setData('text', p.nome);
+        slots.forEach(slot => {
+            slot.addEventListener('click', () => {
+                const char = characters[Math.floor(Math.random() * characters.length)];
+                slot.querySelector('.name').textContent = char.name;
+                slot.dataset.school = char.school;
+                slot.dataset.player = char.name;
+                checkSynergies();
+            });
         });
-        scrollMenu.appendChild(img);
-    });
-    scrollMenu.style.display = 'flex';
-}
 
-function setPersonagemNoHex(hex, personagem) {
-    hex.innerHTML = `<img src="${personagem.img}" alt="${personagem.nome}">
-                     <span class="role-label">${personagem.nome}</span>`;
-    selecionados.push(personagem);
-    atualizarSinergias();
-}
+        function checkSynergies() {
+            const selectedPlayers = Array.from(slots).map(s => s.dataset.player).filter(Boolean);
+            const schoolCount = {};
+            synergyBox.innerHTML = "";
 
-function atualizarSinergias() {
-    synergyList.innerHTML = "";
+            // Contagem de personagens por escola
+            selectedPlayers.forEach(player => {
+                const school = slots.find(s => s.dataset.player === player)?.dataset.school;
+                if (school) {
+                    schoolCount[school] = (schoolCount[school] || 0) + 1;
+                }
+            });
 
-    // Contagem por escola
-    const contagemEscolas = {};
-    selecionados.forEach(p => {
-        if (p.escola) {
-            contagemEscolas[p.escola] = (contagemEscolas[p.escola] || 0) + 1;
+            // Sinergia de Escola (4+ da mesma)
+            for (const school in schoolCount) {
+                if (schoolCount[school] >= 4) {
+                    synergyBox.innerHTML += `<p>Sinergia de Escola: ${school}</p>`;
+                }
+            }
+
+            // Sinergia de Vínculo (pares específicos)
+            bondSynergies.forEach(bond => {
+                if (bond.players.every(p => selectedPlayers.includes(p))) {
+                    synergyBox.innerHTML += `<p>${bond.text}</p>`;
+                }
+            });
+
+            synergyBox.style.display = synergyBox.innerHTML ? 'block' : 'none';
         }
-    });
-
-    // Mostrar sinergia de escola somente se >= 4
-    let algumaSinergia = false;
-    for (let escola in contagemEscolas) {
-        if (contagemEscolas[escola] >= 5) {
-            synergyList.innerHTML += `<li>Sinergia de Escola: ${escola}</li>`;
-            algumaSinergia = true;
-        }
-    }
-
-    // Lista de vínculos específicos (pares)
-    const vinculosEspecificos = [
-        ["Tobio Kageyama", "Shoyo Hinata", "Freak Quick"],
-        ["Toru Oikawa", "Hajime Iwaizumi", "Parceria Oikawa"],
-        ["Ryūnosuke Tanaka", "Yū Nishinoya", "Dupla Nishinoya"],
-        ["Kei Tsukishima", "Tadashi Yamaguchi", "Dupla Tsukishima"]
-    ];
-
-    vinculosEspecificos.forEach(([p1, p2, nomeVinculo]) => {
-        const nomesSelecionados = selecionados.map(s => s.nome);
-        if (nomesSelecionados.includes(p1) && nomesSelecionados.includes(p2)) {
-            synergyList.innerHTML += `<li>Sinergia de Vínculo: ${nomeVinculo}</li>`;
-            algumaSinergia = true;
-        }
-    });
-
-    // Caso nenhuma sinergia esteja ativa
-    if (!algumaSinergia) {
-        synergyList.innerHTML = "<li>Nenhuma sinergia ativa</li>";
-    }
-}
-</script>
-
+    </script>
 </body>
 </html>
+
