@@ -138,8 +138,20 @@
 </style>
 </head>
 <body>
+    <!-- Botão para alternar idioma -->
+    <button id="toggle-lang" style="margin-top:15px;">EN</button>
+
+    <!-- Script que redireciona para o idioma salvo -->
+    <script>
+        if (localStorage.getItem('lang') === 'en' && !location.href.includes("indexEN.html")) {
+            window.location.href = "indexEN.html";
+        }
+        if (localStorage.getItem('lang') === 'pt' && !location.href.includes("indexPT.html")) {
+            window.location.href = "indexPT.html";
+        }
+    </script>
+
     
-<button id="toggle-lang" style="margin-top:15px;">EN</button>
 <h1>Haikyu!! Fly High - Team Builder</h1>
 
 <div class="team-grid">
