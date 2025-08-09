@@ -195,7 +195,7 @@ function addBenchSlot() {
     const benchRow = document.getElementById("bench-row");
     const slot = document.createElement("div");
     slot.className = "player-slot bench";
-    slot.innerHTML = <div class="bench-slot" data-role="bench"></div><div class="player-info">Banco</div>;
+    slot.innerHTML = `<div class="bench-slot" data-role="bench"></div><div class="player-info">Banco</div>`;
     benchRow.insertBefore(slot, benchRow.querySelector(".add-slot-btn"));
     attachBenchEvents(slot.querySelector(".bench-slot"));
 }
@@ -228,14 +228,6 @@ function mostrarMenu(role, slot) {
 
     scrollMenu.style.display = 'flex';
 }
-    function removerJogador(slotId) {
-    // Remove o jogador do slot
-    const slot = document.getElementById(slotId);
-    slot.innerHTML = '';
-
-    // Atualiza a lista de jogadores disponíveis
-    atualizarOpcoes();
-}
 
 function respeitaLimiteBanco(p, slot) {
     const banco = Array.from(document.querySelectorAll(".bench-slot"))
@@ -261,11 +253,11 @@ function setPersonagem(slot, personagem, role) {
         selecionados = selecionados.filter(p => p.nome !== slot.dataset.nome);
     }
 
-    slot.innerHTML = <img src="${personagem.img}" alt="${personagem.nome}">;
+    slot.innerHTML = `<img src="${personagem.img}" alt="${personagem.nome}">`;
     slot.dataset.nome = personagem.nome;
 
     const infoDiv = slot.parentElement.querySelector('.player-info');
-    infoDiv.textContent = ${personagem.nome} - ${personagem.funcao};
+    infoDiv.textContent = `${personagem.nome} - ${personagem.funcao}`;
 
     selecionados.push(personagem);
     atualizarSinergias();
@@ -284,8 +276,8 @@ function atualizarSinergias() {
         }
     });
 
-    escolas.forEach(e => synergyList.innerHTML += <li>Escola: ${e}</li>);
-    vinculos.forEach(v => synergyList.innerHTML += <li>Vínculo: ${v}</li>);
+    escolas.forEach(e => synergyList.innerHTML += `<li>Escola: ${e}</li>`);
+    vinculos.forEach(v => synergyList.innerHTML += `<li>Vínculo: ${v}</li>`);
 }
 
 document.querySelectorAll(".hex").forEach(slot => {
@@ -297,3 +289,4 @@ document.querySelectorAll(".bench-slot").forEach(slot => attachBenchEvents(slot)
 
 </body>
 </html>
+
