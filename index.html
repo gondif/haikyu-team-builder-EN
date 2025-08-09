@@ -33,6 +33,12 @@
         transform: translateX(6px);
     }
 
+    .player-slot {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
     .hex {
         position: relative;
         width: 150px;
@@ -40,7 +46,6 @@
         background-color: #444;
         clip-path: polygon(25% 6.7%, 75% 6.7%, 100% 50%, 75% 93.3%, 25% 93.3%, 0% 50%);
         display: flex;
-        flex-direction: column;
         align-items: center;
         justify-content: center;
         cursor: pointer;
@@ -55,15 +60,13 @@
     .hex img {
         width: 100%;
         height: auto;
-        border-radius: 6px;
     }
 
-    .role-label {
-        position: absolute;
-        bottom: -20px;
+    .player-info {
+        margin-top: 5px;
         font-size: 14px;
-        font-weight: bold;
         color: #fff;
+        text-align: center;
     }
 
     #synergy-panel {
@@ -106,15 +109,36 @@
 
 <div class="team-grid">
     <div class="row top-row">
-        <div class="hex" data-role="Setter"><span class="role-label">Setter</span></div>
-        <div class="hex" data-role="Middle Blocker"><span class="role-label">Middle Blocker</span></div>
-        <div class="hex" data-role="Wing Spiker"><span class="role-label">Wing Spiker</span></div>
+        <div class="player-slot">
+            <div class="hex" data-role="Setter"></div>
+            <div class="player-info">Setter</div>
+        </div>
+        <div class="player-slot">
+            <div class="hex" data-role="Middle Blocker"></div>
+            <div class="player-info">Middle Blocker</div>
+        </div>
+        <div class="player-slot">
+            <div class="hex" data-role="Wing Spiker"></div>
+            <div class="player-info">Wing Spiker</div>
+        </div>
     </div>
     <div class="row">
-        <div class="hex" data-role="Libero"><span class="role-label">Libero</span></div>
-        <div class="hex" data-role="Wing Spiker"><span class="role-label">Wing Spiker</span></div>
-        <div class="hex" data-role="Middle Blocker"><span class="role-label">Middle Blocker</span></div>
-        <div class="hex" data-role="Opposite"><span class="role-label">Opposite</span></div>
+        <div class="player-slot">
+            <div class="hex" data-role="Libero"></div>
+            <div class="player-info">Libero</div>
+        </div>
+        <div class="player-slot">
+            <div class="hex" data-role="Wing Spiker"></div>
+            <div class="player-info">Wing Spiker</div>
+        </div>
+        <div class="player-slot">
+            <div class="hex" data-role="Middle Blocker"></div>
+            <div class="player-info">Middle Blocker</div>
+        </div>
+        <div class="player-slot">
+            <div class="hex" data-role="Opposite"></div>
+            <div class="player-info">Opposite</div>
+        </div>
     </div>
 </div>
 
@@ -189,8 +213,10 @@ function mostrarMenu(role, hex) {
 }
 
 function setPersonagemNoHex(hex, personagem) {
-    hex.innerHTML = `<img src="${personagem.img}" alt="${personagem.nome}">
-                     <span class="role-label">${personagem.nome}</span>`;
+    const playerSlot = hex.parentElement; // div.player-slot
+    hex.innerHTML = `<img src="${personagem.img}" alt="${personagem.nome}">`;
+    const infoDiv = playerSlot.querySelector('.player-info');
+    infoDiv.textContent = `${personagem.nome} - ${personagem.funcao}`;
     selecionados.push(personagem);
     atualizarSinergias();
 }
