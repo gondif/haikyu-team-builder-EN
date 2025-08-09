@@ -5,8 +5,8 @@
 <title>Haikyu Fly High - Team Builder</title>
 <style>
     body {
-        background-color: #222;
-        color: #fff;
+        background-color: #1e1e1e;
+        color: white;
         font-family: Arial, sans-serif;
         text-align: center;
     }
@@ -15,58 +15,45 @@
         margin-top: 20px;
     }
 
-    .team-grid {
+    .formation {
         display: flex;
         flex-direction: column;
-        gap: 20px;
         align-items: center;
-        margin-top: 30px;
+        margin-top: 20px;
     }
 
-    .row {
-        display: flex;
-        gap: 20px;
-    }
-
-    /* Só desloca a linha de cima */
     .top-row {
-        transform: translateX(6px);
+        display: flex;
+        gap: 20px;
+        margin-left: 6px; /* desloca 6px para a direita */
     }
 
-    .player-slot {
+    .bottom-row {
+        display: flex;
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .slot {
         display: flex;
         flex-direction: column;
         align-items: center;
-    }
-
-    .hex {
-        position: relative;
         width: 150px;
-        height: 173px;
-        background-color: #444;
-        clip-path: polygon(25% 6.7%, 75% 6.7%, 100% 50%, 75% 93.3%, 25% 93.3%, 0% 50%);
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    }
+
+    .slot img {
+        width: 150px;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 8px;
+        background-color: #333;
         cursor: pointer;
-        transition: background 0.3s;
-        overflow: hidden;
-    }
-
-    .hex:hover {
-        background-color: #555;
-    }
-
-    .hex img {
-        width: 100%;
-        height: auto;
     }
 
     .player-info {
         margin-top: 5px;
         font-size: 14px;
-        color: #fff;
-        text-align: center;
+        color: #ddd;
     }
 
     #synergy-panel {
