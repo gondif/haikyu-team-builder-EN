@@ -10,133 +10,38 @@
         font-family: Arial, sans-serif;
         text-align: center;
     }
-
-    h1 {
-        margin-top: 20px;
-    }
-
-    .team-grid {
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-        align-items: center;
-        margin-top: 30px;
-    }
-
-    .row {
-        display: flex;
-        gap: 20px;
-    }
-
-    /* Só desloca a linha de cima */
-    .top-row {
-        transform: translateX(6px);
-    }
-
-    .player-slot {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    /* Slots do time principal */
+    h1 { margin-top: 20px; }
+    .team-grid { display: flex; flex-direction: column; gap: 20px; align-items: center; margin-top: 30px; }
+    .row { display: flex; gap: 20px; }
+    .top-row { transform: translateX(6px); }
+    .player-slot { display: flex; flex-direction: column; align-items: center; }
     .hex {
-        position: relative;
-        width: 150px;
-        height: 210px; /* mais alto para a imagem */
-        background-color: #444;
-        border-radius: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: background 0.3s;
-        overflow: hidden;
+        position: relative; width: 150px; height: 210px;
+        background-color: #444; border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer; transition: background 0.3s; overflow: hidden;
     }
-
-    .hex:hover {
-        background-color: #555;
-    }
-
-    .hex img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .player-info {
-        margin-top: 5px;
-        font-size: 14px;
-        color: #fff;
-        text-align: center;
-    }
-
-    /* Estilo do banco */
-    .bench-slot {
-        position: relative;
-        width: 50px;
-        height: 67px;
-        background-color: #333;
-        border-radius: 5px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-    }
-
-    .bench-slot img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
+    .hex:hover { background-color: #555; }
+    .hex img { width: 100%; height: 100%; object-fit: cover; }
+    .player-info { margin-top: 5px; font-size: 14px; color: #fff; text-align: center; }
     #synergy-panel {
-        margin-top: 50px;
-        background-color: #333;
-        padding: 15px;
-        border-radius: 10px;
-        max-width: 600px;
-        margin-left: auto;
-        margin-right: auto;
-        text-align: left;
+        margin-top: 50px; background-color: #333; padding: 15px;
+        border-radius: 10px; max-width: 600px; margin-left: auto; margin-right: auto; text-align: left;
     }
-
     .scroll-menu {
-        display: none;
-        margin-top: 10px;
-        max-height: 200px;
-        overflow-y: auto;
-        background-color: #333;
-        padding: 10px;
-        border-radius: 8px;
+        display: none; margin-top: 10px; max-height: 200px; overflow-y: auto;
+        background-color: #333; padding: 10px; border-radius: 8px;
     }
-
     .scroll-menu img {
-        width: 80px;
-        height: auto;
-        cursor: grab;
-        margin: 5px;
-        border: 2px solid transparent;
+        width: 80px; height: auto; cursor: grab; margin: 5px; border: 2px solid transparent;
     }
-
-    .scroll-menu img:hover {
-        border: 2px solid yellow;
+    .scroll-menu img:hover { border: 2px solid yellow; }
+    #banco-container { margin-top: 30px; }
+    #addBancoBtn {
+        background-color: #28a745; color: white; border: none; padding: 10px 20px;
+        font-size: 16px; border-radius: 5px; cursor: pointer;
     }
-
-    #addBenchSlotBtn {
-        margin-top: 10px;
-        background-color: #444;
-        color: white;
-        padding: 5px 10px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-
-    #addBenchSlotBtn:hover {
-        background-color: #555;
-    }
+    #addBancoBtn:hover { background-color: #218838; }
 </style>
 </head>
 <body>
@@ -145,45 +50,22 @@
 
 <div class="team-grid">
     <div class="row top-row">
-        <div class="player-slot">
-            <div class="hex" data-role="S"></div>
-            <div class="player-info">S</div>
-        </div>
-        <div class="player-slot">
-            <div class="hex" data-role="MB"></div>
-            <div class="player-info">MB</div>
-        </div>
-        <div class="player-slot">
-            <div class="hex" data-role="WS"></div>
-            <div class="player-info">WS</div>
-        </div>
+        <div class="player-slot"><div class="hex" data-role="S" data-pos="principal"></div><div class="player-info">S</div></div>
+        <div class="player-slot"><div class="hex" data-role="MB" data-pos="principal"></div><div class="player-info">MB</div></div>
+        <div class="player-slot"><div class="hex" data-role="WS" data-pos="principal"></div><div class="player-info">WS</div></div>
     </div>
     <div class="row">
-        <div class="player-slot">
-            <div class="hex" data-role="L"></div>
-            <div class="player-info">L</div>
-        </div>
-        <div class="player-slot">
-            <div class="hex" data-role="WS"></div>
-            <div class="player-info">WS</div>
-        </div>
-        <div class="player-slot">
-            <div class="hex" data-role="MB"></div>
-            <div class="player-info">MB</div>
-        </div>
-        <div class="player-slot">
-            <div class="hex" data-role="OP"></div>
-            <div class="player-info">OP</div>
-        </div>
+        <div class="player-slot"><div class="hex" data-role="L" data-pos="principal"></div><div class="player-info">L</div></div>
+        <div class="player-slot"><div class="hex" data-role="WS" data-pos="principal"></div><div class="player-info">WS</div></div>
+        <div class="player-slot"><div class="hex" data-role="MB" data-pos="principal"></div><div class="player-info">MB</div></div>
+        <div class="player-slot"><div class="hex" data-role="OP" data-pos="principal"></div><div class="player-info">OP</div></div>
     </div>
+</div>
 
-    <!-- Banco -->
-    <div class="row" id="benchRow" style="margin-top:40px;">
-        <div class="bench-slot" data-role=""></div>
-        <div class="bench-slot" data-role=""></div>
-        <div class="bench-slot" data-role=""></div>
-    </div>
-    <button id="addBenchSlotBtn">Adicionar Slot no Banco</button>
+<div id="banco-container">
+    <h2>Banco de Reservas</h2>
+    <button id="addBancoBtn">Adicionar ao Banco</button>
+    <div class="row" id="banco"></div>
 </div>
 
 <div class="scroll-menu" id="scrollMenu"></div>
@@ -217,17 +99,20 @@ const personagens = [
 ];
 
 const hexes = document.querySelectorAll('.hex');
-const benchRow = document.getElementById('benchRow');
-const scrollMenu = document.getElementById('scrollMenu');
 const synergyList = document.getElementById('synergy-list');
-const addBenchSlotBtn = document.getElementById('addBenchSlotBtn');
+const scrollMenu = document.getElementById('scrollMenu');
+const bancoContainer = document.getElementById('banco');
+const addBancoBtn = document.getElementById('addBancoBtn');
 
 let selecionados = [];
 let banco = [];
 
-function mostrarMenu(role, slot, isBench = false) {
+// Mostrar menu filtrando quem já foi escolhido
+function mostrarMenu(role, hex, posicao) {
     scrollMenu.innerHTML = '';
-    const disponiveis = personagens.filter(p => role ? p.funcao === role : true);
+    const disponiveis = personagens.filter(p => 
+        p.funcao === role && !selecionados.includes(p)
+    );
     disponiveis.forEach(p => {
         const img = document.createElement('img');
         img.src = p.img;
@@ -235,11 +120,8 @@ function mostrarMenu(role, slot, isBench = false) {
         img.draggable = true;
         img.title = p.nome;
         img.addEventListener('click', () => {
-            if (isBench) {
-                setBanco(slot, p);
-            } else {
-                setPersonagemNoHex(slot, p);
-            }
+            if (posicao === "banco") setPersonagemNoBanco(hex, p);
+            else setPersonagemNoHex(hex, p);
         });
         img.addEventListener('dragstart', e => {
             e.dataTransfer.setData('text', p.nome);
@@ -249,62 +131,92 @@ function mostrarMenu(role, slot, isBench = false) {
     scrollMenu.style.display = 'flex';
 }
 
+// Adicionar personagem no time principal
 function setPersonagemNoHex(hex, personagem) {
     const playerSlot = hex.parentElement;
+    const antigo = selecionados.find(p => p.nome === playerSlot.dataset.nome);
+    if (antigo) selecionados = selecionados.filter(p => p !== antigo);
+
     hex.innerHTML = `<img src="${personagem.img}" alt="${personagem.nome}">`;
-    const infoDiv = playerSlot.querySelector('.player-info');
-    infoDiv.textContent = `${personagem.nome} - ${personagem.funcao}`;
+    playerSlot.querySelector('.player-info').textContent = `${personagem.nome} - ${personagem.funcao}`;
+    playerSlot.dataset.nome = personagem.nome;
+
     selecionados.push(personagem);
     atualizarSinergias();
 }
 
-function setBanco(slot, personagem) {
-    // Restrições
-    const counts = banco.reduce((acc, p) => {
-        acc[p.funcao] = (acc[p.funcao] || 0) + 1;
-        return acc;
-    }, {});
-    if ((personagem.funcao === "MB" && (counts.MB || 0) >= 2) ||
-        (personagem.funcao === "WS" && (counts.WS || 0) >= 2) ||
-        (personagem.funcao !== "MB" && personagem.funcao !== "WS" && (counts[personagem.funcao] || 0) >= 1)) {
-        alert(`Limite para ${personagem.funcao} no banco atingido!`);
-        return;
+// Adicionar personagem no banco (com regras)
+function setPersonagemNoBanco(hex, personagem) {
+    const slotIndex = parseInt(hex.dataset.index);
+    const antigo = banco[slotIndex];
+    const substituindo = !!antigo;
+
+    if (!substituindo) {
+        const countFuncao = banco.filter(p => p && p.funcao === personagem.funcao).length;
+        if ((personagem.funcao === "MB" || personagem.funcao === "WS") && countFuncao >= 2) {
+            alert(`Máximo de 2 jogadores para a função ${personagem.funcao} no banco.`);
+            return;
+        }
+        if (!(personagem.funcao === "MB" || personagem.funcao === "WS") && countFuncao >= 1) {
+            alert(`Máximo de 1 jogador para a função ${personagem.funcao} no banco.`);
+            return;
+        }
     }
 
-    slot.innerHTML = `<img src="${personagem.img}" alt="${personagem.nome}">`;
-    slot.setAttribute('data-role', personagem.funcao);
-    banco.push(personagem);
+    if (antigo) selecionados = selecionados.filter(p => p !== antigo);
+
+    hex.innerHTML = `<img src="${personagem.img}" alt="${personagem.nome}">`;
+    hex.parentElement.querySelector('.player-info').textContent = `${personagem.nome} - ${personagem.funcao}`;
+    banco[slotIndex] = personagem;
+    selecionados.push(personagem);
     atualizarSinergias();
 }
 
+// Atualizar sinergias (escola só titulares, vínculo todos)
 function atualizarSinergias() {
     synergyList.innerHTML = "";
     const escolas = new Set();
     const vinculos = new Set();
-    selecionados.forEach(p => escolas.add(p.escola));
-    [...selecionados, ...banco].forEach(p => vinculos.add(p.vinculo));
+
+    const titulares = Array.from(document.querySelectorAll('.hex[data-pos="principal"]'))
+        .map(hex => selecionados.find(p => p.nome === hex.parentElement.dataset.nome))
+        .filter(Boolean);
+
+    titulares.forEach(p => escolas.add(p.escola));
+    selecionados.forEach(p => vinculos.add(p.vinculo));
+
+    if (escolas.size === 0 && vinculos.size === 0) {
+        synergyList.innerHTML = "<li>Nenhuma sinergia ativa</li>";
+        return;
+    }
     escolas.forEach(e => synergyList.innerHTML += `<li>Escola: ${e}</li>`);
     vinculos.forEach(v => synergyList.innerHTML += `<li>Vínculo: ${v}</li>`);
 }
 
-hexes.forEach(hex => {
+// Criar evento para adicionar banco
+addBancoBtn.addEventListener('click', () => {
+    const novoIndex = banco.length;
+    const slot = document.createElement('div');
+    slot.classList.add('player-slot');
+    slot.innerHTML = `<div class="hex" data-role="S" data-pos="banco" data-index="${novoIndex}"></div><div class="player-info">Banco</div>`;
+    bancoContainer.appendChild(slot);
+
+    const hex = slot.querySelector('.hex');
     hex.addEventListener('click', () => {
         const role = hex.getAttribute('data-role');
-        mostrarMenu(role, hex);
+        mostrarMenu(role, hex, "banco");
     });
 });
 
-benchRow.querySelectorAll('.bench-slot').forEach(slot => {
-    slot.addEventListener('click', () => mostrarMenu(null, slot, true));
-});
-
-addBenchSlotBtn.addEventListener('click', () => {
-    const newSlot = document.createElement('div');
-    newSlot.classList.add('bench-slot');
-    newSlot.addEventListener('click', () => mostrarMenu(null, newSlot, true));
-    benchRow.appendChild(newSlot);
+// Eventos iniciais para titulares
+hexes.forEach(hex => {
+    hex.addEventListener('click', () => {
+        const role = hex.getAttribute('data-role');
+        mostrarMenu(role, hex, "principal");
+    });
 });
 </script>
 
 </body>
 </html>
+
