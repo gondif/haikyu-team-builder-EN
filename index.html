@@ -234,6 +234,140 @@ function atualizarSinergias() {
     escolas.forEach(e => synergyList.innerHTML += `<li>Escola: ${e}</li>`);
     vinculos.forEach(v => synergyList.innerHTML += `<li>Vínculo: ${v}</li>`);
 }
+    
+    /* Banco de reservas */
+    .bench-row {
+        display: flex;
+        gap: 10px;
+        margin-top: 40px; /* espaçamento da segunda linha */
+        align-items: center;
+    }
+
+    .bench-slot {
+        width: 50px;
+        height: 67px;
+        background-color: #555;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        overflow: hidden;
+    }
+
+    .bench-slot img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .add-bench-btn {
+        background-color: #888;
+        border: none;
+        padding: 5px 10px;
+        color: #fff;
+        cursor: pointer;
+        border-radius: 5px;
+        font-size: 12px;
+    }
+</style>
+
+<div class="bench-row" id="benchRow">
+    <div class="bench-slot" data-role="bench"></div>
+    <div class="bench-slot" data-role="bench"></div>
+    <div class="bench-slot" data-role="bench"></div>
+    <button class="add-bench-btn" id="addBenchBtn">+ Slot</button>
+</div>
+
+<script>
+    const benchRow = document.getElementById('benchRow');
+    const addBenchBtn = document.getElementById('addBenchBtn');
+    let benchPlayers = [];
+
+    addBenchBtn.addEventListener('click', () => {
+        const newSlot = document.createElement('div');
+        newSlot.classList.add('bench-slot');
+        newSlot.setAttribute('data-role', 'bench');
+        benchRow.insertBefore(newSlot, addBenchBtn);
+        configurarBenchSlot(newSlot);
+    });
+
+    function configurarBenchSlot(slot) {
+        slot.addEventListener('click', () => {
+            mostrarMenuBanco(slot);
+        });
+
+        slot.addEventListener('dragover', e => e.preventDefault());
+        slot.addEventListener('drop', e => {
+            e.preventDefault();
+            const nome = e.dataTransfer.getData('text');
+            const escolhido = personagens.find(p => p.nome === nome);
+            if (escolhido && podeAdicionarNoBanco(escolhido.funcao)) {
+                setPersonagemNoBanco(slot, escolhido);
+            } else {
+                alert("Limite de posição no banco atingido!");
+            }
+        });
+    }
+
+    document.querySelectorAll('.bench-slot').forEach(configurarBenchSlot);
+
+    function mostrarMenuBanco(slot) {
+        scrollMenu.innerHTML = '';
+        personagens.forEach(p => {
+            const img = document.createElement('img');
+            img.src = p.img;
+            img.alt = p.nome;
+            img.draggable = true;
+            img.title = `${p.nome} - ${p.funcao}`;
+            img.addEventListener('click', () => {
+                if (podeAdicionarNoBanco(p.funcao)) {
+                    setPersonagemNoBanco(slot, p);
+                } else {
+                    alert("Limite de posição no banco atingido!");
+                }
+            });
+            img.addEventListener('dragstart', e => {
+                e.dataTransfer.setData('text', p.nome);
+            });
+            scrollMenu.appendChild(img);
+        });
+        scrollMenu.style.display = 'flex';
+    }
+
+    function podeAdicionarNoBanco(funcao) {
+        const counts = {};
+        benchPlayers.forEach(p => counts[p.funcao] = (counts[p.funcao] || 0) + 1);
+
+        if (funcao === 'MB' && (counts['MB'] || 0) >= 2) return false;
+        if (funcao === 'WS' && (counts['WS'] || 0) >= 2) return false;
+        if (funcao !== 'MB' && funcao !== 'WS' && (counts[funcao] || 0) >= 1) return false;
+        return true;
+    }
+
+    function setPersonagemNoBanco(slot, personagem) {
+        slot.innerHTML = `<img src="${personagem.img}" alt="${personagem.nome}">`;
+        benchPlayers.push(personagem);
+        atualizarSinergias(); // ainda usa vínculo
+    }
+
+    // Alterar atualização de sinergia para ignorar banco na escola
+    function atualizarSinergias() {
+        synergyList.innerHTML = "";
+        const escolas = new Set();
+        const vinculos = new Set();
+
+        selecionados.forEach(p => {
+            escolas.add(p.escola);
+            vinculos.add(p.vinculo);
+        });
+        benchPlayers.forEach(p => {
+            vinculos.add(p.vinculo); // só vínculo do banco
+        });
+
+        escolas.forEach(e => synergyList.innerHTML += `<li>Escola: ${e}</li>`);
+        vinculos.forEach(v => synergyList.innerHTML += `<li>Vínculo: ${v}</li>`);
+    }
 </script>
 
 </body>
