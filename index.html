@@ -228,6 +228,14 @@ function mostrarMenu(role, slot) {
 
     scrollMenu.style.display = 'flex';
 }
+    function removerJogador(slotId) {
+    // Remove o jogador do slot
+    const slot = document.getElementById(slotId);
+    slot.innerHTML = '';
+
+    // Atualiza a lista de jogadores disponíveis
+    atualizarOpcoes();
+}
 
 function respeitaLimiteBanco(p, slot) {
     const banco = Array.from(document.querySelectorAll(".bench-slot"))
