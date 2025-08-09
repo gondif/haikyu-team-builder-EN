@@ -1,433 +1,230 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8" />
-<title>Haikyu Fly High - Team Builder (Posições Atualizadas)</title>
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta charset="UTF-8">
+<title>Haikyu Fly High - Team Builder</title>
 <style>
-  :root{
-    --bg:#0f7f7f;
-    --panel:#111;
-    --card:#222;
-    --accent:#fff;
-    --slot-bg: rgba(255,255,255,0.03);
-  }
+    body {
+        background-color: #222;
+        color: #fff;
+        font-family: Arial, sans-serif;
+        text-align: center;
+    }
 
-  html,body{ height:100%; margin:0; font-family: Inter, Arial, Helvetica, sans-serif; background:var(--bg); color:var(--accent); }
+    h1 {
+        margin-top: 20px;
+    }
 
-  .page{
-    min-height:100vh;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:14px;
-    padding:18px;
-    box-sizing:border-box;
-  }
+    .team-layout {
+        display: grid;
+        grid-template-columns: repeat(4, 150px);
+        grid-template-rows: repeat(2, 200px);
+        gap: 20px;
+        justify-content: center;
+        margin-top: 30px;
+    }
 
-  h1{ margin:6px 0 0; text-shadow:0 2px 6px rgba(0,0,0,.5); font-size:20px; }
+    .hex {
+        position: relative;
+        width: 150px;
+        height: 173px;
+        background-color: #444;
+        clip-path: polygon(25% 6.7%, 75% 6.7%, 100% 50%, 75% 93.3%, 25% 93.3%, 0% 50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background 0.3s;
+        overflow: hidden;
+    }
 
-  /* área da quadra: fundo (coloque img/quadra.png no repo) */
-  .court-wrap{
-    width:100%;
-    max-width:980px;
-    aspect-ratio: 16/9;
-    position:relative;
-    background: center/cover no-repeat url("img/quadra.png");
-    border-radius:10px;
-    box-shadow:0 8px 22px rgba(0,0,0,.45);
-    overflow:visible;
-  }
+    .hex:hover {
+        background-color: #555;
+    }
 
-  /* padrão dos slots */
-  .slot {
-    position:absolute;
-    width:120px;
-    height:140px;
-    background: var(--slot-bg);
-    border:2px solid rgba(255,255,255,0.12);
-    border-radius:8px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:flex-start;
-    gap:6px;
-    padding:8px;
-    box-sizing:border-box;
-    cursor:pointer;
-    transition: transform .12s ease, box-shadow .12s ease, outline .08s;
-    z-index:5;
-  }
-  .slot:hover{ transform: translateY(-6px); box-shadow:0 12px 30px rgba(0,0,0,.6); }
+    .hex img {
+        width: 100%;
+        height: auto;
+        border-radius: 6px;
+    }
 
-  .slot .role {
-    position:relative;
-    left:0;
-    font-size:12px;
-    font-weight:700;
-    letter-spacing:.6px;
-    align-self:flex-start;
-    background:transparent;
-    color:var(--accent);
-    padding-left:2px;
-  }
+    .role-label {
+        position: absolute;
+        bottom: -20px;
+        font-size: 14px;
+        font-weight: bold;
+        color: #fff;
+    }
 
-  .slot .portrait{
-    width:100%;
-    height:80px;
-    background:linear-gradient(180deg,#222,#111);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    overflow:hidden;
-    border-radius:6px;
-  }
-  .slot .portrait img{ max-width:100%; max-height:100%; display:block; }
+    #synergy-panel {
+        margin-top: 50px;
+        background-color: #333;
+        padding: 15px;
+        border-radius: 10px;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: left;
+    }
 
-  .slot .name{
-    width:100%;
-    font-size:13px;
-    text-align:center;
-    margin-top:6px;
-    word-break:break-word;
-    line-height:1.05;
-    min-height:36px;
-  }
+    .scroll-menu {
+        display: none;
+        margin-top: 10px;
+        max-height: 200px;
+        overflow-y: auto;
+        background-color: #333;
+        padding: 10px;
+        border-radius: 8px;
+    }
 
-  /* Bench (quatro slots) */
-  .bench {
-    position:absolute;
-    left:6%;
-    bottom:6%;
-    display:flex;
-    gap:12px;
-    z-index:6;
-  }
-  .bench .slot{ width:72px; height:96px; padding:6px; }
+    .scroll-menu img {
+        width: 80px;
+        height: auto;
+        cursor: grab;
+        margin: 5px;
+        border: 2px solid transparent;
+    }
 
-  /* Picker / scroller - aparece quando clicar em slot */
-  .picker {
-    width:100%;
-    max-width:980px;
-    margin-top:6px;
-  }
-  .picker-inner{
-    display:flex;
-    gap:10px;
-    align-items:center;
-    padding:10px;
-    background:var(--card);
-    border-radius:10px;
-    overflow-x:auto;
-    box-shadow:0 6px 18px rgba(0,0,0,.45);
-  }
-  .picker-card{
-    flex:0 0 auto;
-    width:84px;
-    text-align:center;
-    padding:6px;
-    border-radius:8px;
-    background:rgba(255,255,255,0.02);
-    cursor:grab;
-    user-select:none;
-    border:1px solid rgba(255,255,255,0.03);
-  }
-  .picker-card img{ width:100%; height:64px; object-fit:cover; border-radius:6px; display:block; }
-  .picker-card .pname{ font-size:11px; margin-top:6px; line-height:1.0; color:var(--accent); }
-
-  /* Synergy panel */
-  #synergy-panel{
-    width:100%;
-    max-width:900px;
-    background:var(--panel);
-    padding:10px 14px;
-    border-radius:10px;
-    box-shadow:0 6px 18px rgba(0,0,0,.45);
-    color:#e9e9e9;
-  }
-  #synergy-panel h2{ margin:0 0 6px; font-size:16px; }
-  #synergy-list{ margin:0; padding-left:18px; }
-
-  /* Responsivo */
-  @media (max-width:720px){
-    .slot{ width:92px; height:120px; }
-    .slot .name{ min-height:28px; font-size:12px; }
-    .bench{ left:4%; bottom:4%; gap:8px; }
-    .picker-card{ width:64px; }
-  }
+    .scroll-menu img:hover {
+        border: 2px solid yellow;
+    }
 </style>
 </head>
 <body>
-  <div class="page">
-    <h1>Team Builder — Layout atualizado</h1>
 
-    <div class="court-wrap" id="court">
-      <!-- Top row (L, WS, OP) -->
-      <div class="slot" id="slot-top-left" data-role="Libero" style="top:6%; left:8%;">
-        <div class="role">L</div>
-        <div class="portrait"></div>
-        <div class="name">Nome</div>
-      </div>
+<h1>Haikyu!! Fly High - Team Builder</h1>
 
-      <div class="slot" id="slot-top-center" data-role="Wing Spiker" style="top:4%; left:42%;">
-        <div class="role">WS</div>
-        <div class="portrait"></div>
-        <div class="name">Nome</div>
-      </div>
+<div class="team-layout" id="team">
+    <div class="hex" data-role="Setter"><span class="role-label">Setter</span></div>
+    <div class="hex" data-role="Wing Spiker"><span class="role-label">Wing Spiker</span></div>
+    <div class="hex" data-role="Middle Blocker"><span class="role-label">Middle Blocker</span></div>
+    <div class="hex" data-role="Libero"><span class="role-label">Libero</span></div>
+    <div class="hex" data-role="Wing Spiker"><span class="role-label">Wing Spiker</span></div>
+    <div class="hex" data-role="Middle Blocker"><span class="role-label">Middle Blocker</span></div>
+    <div class="hex" data-role="Opposite"><span class="role-label">Opposite</span></div>
+</div>
 
-      <div class="slot" id="slot-top-right" data-role="Opposite" style="top:6%; left:76%;">
-        <div class="role">OP</div>
-        <div class="portrait"></div>
-        <div class="name">Nome</div>
-      </div>
+<div class="scroll-menu" id="scrollMenu"></div>
 
-      <!-- Middle row (two MBs) -->
-      <div class="slot" id="slot-mid-left" data-role="Middle Blocker" style="top:26%; left:30%;">
-        <div class="role">MB</div>
-        <div class="portrait"></div>
-        <div class="name">Nome</div>
-      </div>
-
-      <div class="slot" id="slot-mid-right" data-role="Middle Blocker" style="top:26%; left:62%;">
-        <div class="role">MB</div>
-        <div class="portrait"></div>
-        <div class="name">Nome</div>
-      </div>
-
-      <!-- Lower row: left = SAQUE (Setter/Serve), right = WS -->
-      <div class="slot" id="slot-lower-left" data-role="Setter" style="top:48%; left:18%;">
-        <div class="role">SAQUE<br><small style="font-weight:700;">S</small></div>
-        <div class="portrait"></div>
-        <div class="name">Nome</div>
-      </div>
-
-      <div class="slot" id="slot-lower-right" data-role="Wing Spiker" style="top:48%; left:62%;">
-        <div class="role">WS</div>
-        <div class="portrait"></div>
-        <div class="name">Nome</div>
-      </div>
-
-      <!-- Banco: 4 slots, alinhados na parte inferior esquerda -->
-      <div class="bench" id="bench">
-        <div class="slot bench-slot" id="bench-1" data-role="Any">
-          <div class="role">BANCO</div>
-          <div class="portrait"></div>
-          <div class="name">Vago</div>
-        </div>
-        <div class="slot bench-slot" id="bench-2" data-role="Any">
-          <div class="role">BANCO</div>
-          <div class="portrait"></div>
-          <div class="name">Vago</div>
-        </div>
-        <div class="slot bench-slot" id="bench-3" data-role="Any">
-          <div class="role">BANCO</div>
-          <div class="portrait"></div>
-          <div class="name">Vago</div>
-        </div>
-        <div class="slot bench-slot" id="bench-4" data-role="Any">
-          <div class="role">BANCO</div>
-          <div class="portrait"></div>
-          <div class="name">Vago</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- picker (scroll horizontal) -->
-    <div class="picker" id="picker" style="display:none;">
-      <div class="picker-inner" id="pickerInner"></div>
-    </div>
-
-    <!-- sinergias -->
-    <div id="synergy-panel">
-      <h2>Sinergias Ativas</h2>
-      <ul id="synergy-list"><li>Nenhuma sinergia ativa</li></ul>
-    </div>
-  </div>
+<div id="synergy-panel">
+    <h2>Sinergias Ativas</h2>
+    <ul id="synergy-list">
+        <li>Nenhuma sinergia ativa</li>
+    </ul>
+</div>
 
 <script>
-/* Dados - caminhos esperam pasta img/ no repositório */
 const personagens = [
-  { nome:"Tobio Kageyama", funcao:"Setter", img:"img/kageyamaUR.png", escola:"Karasuno", vinculo:"Freak Quick" },
-  { nome:"Kōshi Sugawara", funcao:"Setter", img:"img/sugawara.png", escola:"Karasuno", vinculo:"Suporte" },
-  { nome:"Kenma Kozume", funcao:"Setter", img:"img/kenmaSP.png", escola:"Nekoma", vinculo:"Time Nekoma" },
-  { nome:"Toru Oikawa", funcao:"Setter", img:"img/oikawa.png", escola:"Aoba Johsai", vinculo:"Parceria Iwaizumi" },
-  { nome:"Shoyo Hinata", funcao:"Middle Blocker", img:"img/hinataSP.png", escola:"Karasuno", vinculo:"Freak Quick" },
-  { nome:"Tetsurō Kuroo", funcao:"Middle Blocker", img:"img/kuroo.png", escola:"Nekoma", vinculo:"Time Nekoma" },
-  { nome:"Kei Tsukishima", funcao:"Middle Blocker", img:"img/tsukishima.png", escola:"Karasuno", vinculo:"Dupla Yamaguchi" },
-  { nome:"Takanobu Aone", funcao:"Middle Blocker", img:"img/aone.png", escola:"Date Tech", vinculo:"Paredão de Ferro" },
-  { nome:"Wakatoshi Ushijima", funcao:"Wing Spiker", img:"img/ushijima.png", escola:"Shiratorizawa", vinculo:"Capitão" },
-  { nome:"Hajime Iwaizumi", funcao:"Wing Spiker", img:"img/iwaizumi.png", escola:"Aoba Johsai", vinculo:"Parceria Oikawa" },
-  { nome:"Ryūnosuke Tanaka", funcao:"Wing Spiker", img:"img/tanaka.png", escola:"Karasuno", vinculo:"Dupla Nishinoya" },
-  { nome:"Kentarō Kyōtani", funcao:"Opposite", img:"img/kyotani.png", escola:"Aoba Johsai", vinculo:"Time Aoba Johsai" },
-  { nome:"Asahi Azumane", funcao:"Wing Spiker", img:"img/asahi.png", escola:"Karasuno", vinculo:"Time Karasuno" },
-  { nome:"Daichi Sawamura", funcao:"Opposite", img:"img/daichi.png", escola:"Karasuno", vinculo:"Capitão" },
-  { nome:"Yū Nishinoya", funcao:"Libero", img:"img/nishinoya.png", escola:"Karasuno", vinculo:"Dupla Tanaka" },
-  { nome:"Tadashi Yamaguchi", funcao:"Middle Blocker", img:"img/yamaguchi.png", escola:"Karasuno", vinculo:"Dupla Tsukishima" },
-  { nome:"Issei Matsukawa", funcao:"Middle Blocker", img:"img/matsukawa.png", escola:"Aoba Johsai", vinculo:"Time Aoba Johsai" }
+    { nome: "Tobio Kageyama", funcao: "Setter", img: "img/kageyamaUR.png", escola: "Karasuno", vinculo: "Freak Quick" },
+    { nome: "Kōshi Sugawara", funcao: "Setter", img: "img/sugawara.png", escola: "Karasuno", vinculo: "Suporte" },
+    { nome: "Kenma Kozume", funcao: "Setter", img: "img/kenmaSP.png", escola: "Nekoma", vinculo: "Time Nekoma" },
+    { nome: "Toru Oikawa", funcao: "Setter", img: "img/oikawa.png", escola: "Aoba Johsai", vinculo: "Parceria Iwaizumi" },
+    { nome: "Shoyo Hinata", funcao: "Middle Blocker", img: "img/hinataSP.png", escola: "Karasuno", vinculo: "Freak Quick" },
+    { nome: "Tetsurō Kuroo", funcao: "Middle Blocker", img: "img/kuroo.png", escola: "Nekoma", vinculo: "Time Nekoma" },
+    { nome: "Kei Tsukishima", funcao: "Middle Blocker", img: "img/tsukishima.png", escola: "Karasuno", vinculo: "Dupla Yamaguchi" },
+    { nome: "Takanobu Aone", funcao: "Middle Blocker", img: "img/aone.png", escola: "Date Tech", vinculo: "Paredão de Ferro" },
+    { nome: "Wakatoshi Ushijima", funcao: "Wing Spiker", img: "img/ushijima.png", escola: "Shiratorizawa", vinculo: "Capitão" },
+    { nome: "Hajime Iwaizumi", funcao: "Wing Spiker", img: "img/iwaizumi.png", escola: "Aoba Johsai", vinculo: "Parceria Oikawa" },
+    { nome: "Ryūnosuke Tanaka", funcao: "Wing Spiker", img: "img/tanaka.png", escola: "Karasuno", vinculo: "Dupla Nishinoya" },
+    { nome: "Kentarō Kyōtani", funcao: "Opposite", img: "img/kyotani.png", escola: "Aoba Johsai", vinculo: "Time Aoba Johsai" },
+    { nome: "Asahi Azumane", funcao: "Wing Spiker", img: "img/asahi.png", escola: "Karasuno", vinculo: "Time Karasuno" },
+    { nome: "Daichi Sawamura", funcao: "Opposite", img: "img/daichi.png", escola: "Karasuno", vinculo: "Capitão" },
+    { nome: "Yū Nishinoya", funcao: "Libero", img: "img/nishinoya.png", escola: "Karasuno", vinculo: "Dupla Tanaka" },
+    { nome: "Tadashi Yamaguchi", funcao: "Middle Blocker", img: "img/yamaguchi.png", escola: "Karasuno", vinculo: "Dupla Tsukishima" },
+    { nome: "Issei Matsukawa", funcao: "Middle Blocker", img: "img/matsukawa.png", escola: "Aoba Johsai", vinculo: "Time Aoba Johsai" }
 ];
 
-/* Interações */
-const picker = document.getElementById('picker');
-const pickerInner = document.getElementById('pickerInner');
+const hexes = document.querySelectorAll('.hex');
 const synergyList = document.getElementById('synergy-list');
+const scrollMenu = document.getElementById('scrollMenu');
+let selecionados = [];
 
-let activeSlot = null;
-
-/* monta picker filtrado por função (role) */
-function makePickerForRole(role){
-  pickerInner.innerHTML = '';
-  const list = role === 'Any' ? personagens : personagens.filter(p => p.funcao === role);
-  if(list.length === 0){
-    const n = document.createElement('div');
-    n.textContent = 'Nenhum personagem disponível';
-    n.style.padding='8px';
-    pickerInner.appendChild(n);
-    return;
-  }
-  list.forEach(p => {
-    const card = document.createElement('div');
-    card.className = 'picker-card';
-    card.draggable = true;
-
-    const img = document.createElement('img');
-    img.src = p.img;
-    img.alt = p.nome;
-    img.loading = 'lazy';
-
-    const lbl = document.createElement('div');
-    lbl.className = 'pname';
-    lbl.textContent = p.nome;
-
-    card.appendChild(img);
-    card.appendChild(lbl);
-
-    // clique rápido coloca no slot ativo
-    card.addEventListener('click', (ev) => {
-      ev.stopPropagation();
-      if(!activeSlot) return;
-      setSlotCharacter(activeSlot, p);
-      hidePicker();
+hexes.forEach(hex => {
+    hex.addEventListener('click', () => {
+        const role = hex.getAttribute('data-role');
+        mostrarMenu(role, hex);
     });
 
-    // drag start -> envia nome
-    card.addEventListener('dragstart', (ev) => {
-      ev.dataTransfer.setData('text/plain', p.nome);
-      try{ ev.dataTransfer.setDragImage(img, 30, 30); }catch(e){}
+    // Permitir soltar personagens
+    hex.addEventListener('dragover', e => e.preventDefault());
+    hex.addEventListener('drop', e => {
+        e.preventDefault();
+        const nome = e.dataTransfer.getData('text');
+        const escolhido = personagens.find(p => p.nome === nome);
+        if (escolhido) {
+            setPersonagemNoHex(hex, escolhido);
+        }
+    });
+});
+
+function mostrarMenu(role, hex) {
+    scrollMenu.innerHTML = '';
+    const disponiveis = personagens.filter(p => p.funcao === role);
+    disponiveis.forEach(p => {
+        const img = document.createElement('img');
+        img.src = p.img;
+        img.alt = p.nome;
+        img.draggable = true;
+        img.title = p.nome;
+        img.addEventListener('click', () => setPersonagemNoHex(hex, p));
+        img.addEventListener('dragstart', e => {
+            e.dataTransfer.setData('text', p.nome);
+        });
+        scrollMenu.appendChild(img);
+    });
+    scrollMenu.style.display = 'flex';
+}
+
+function setPersonagemNoHex(hex, personagem) {
+    hex.innerHTML = `<img src="${personagem.img}" alt="${personagem.nome}">
+                     <span class="role-label">${personagem.nome}</span>`;
+    selecionados.push(personagem);
+    atualizarSinergias();
+}
+
+function atualizarSinergias() {
+    synergyList.innerHTML = "";
+
+    // Contagem por escola
+    const contagemEscolas = {};
+    selecionados.forEach(p => {
+        if (p.escola) {
+            contagemEscolas[p.escola] = (contagemEscolas[p.escola] || 0) + 1;
+        }
     });
 
-    pickerInner.appendChild(card);
-  });
-}
-
-/* coloca personagem no slot DOM */
-function setSlotCharacter(slotEl, personagem){
-  const portrait = slotEl.querySelector('.portrait');
-  const nameEl = slotEl.querySelector('.name');
-
-  portrait.innerHTML = '';
-  const img = document.createElement('img');
-  img.src = personagem.img;
-  img.alt = personagem.nome;
-  portrait.appendChild(img);
-
-  nameEl.textContent = personagem.nome;
-
-  // guarda nome no atributo para sinergias
-  slotEl.dataset.assigned = personagem.nome;
-  updateSelectedList();
-}
-
-/* limpa slot (duplo clique) */
-function clearSlot(slotEl){
-  const portrait = slotEl.querySelector('.portrait');
-  const nameEl = slotEl.querySelector('.name');
-  portrait.innerHTML = '';
-  nameEl.textContent = slotEl.classList.contains('bench-slot') ? 'Vago' : 'Nome';
-  delete slotEl.dataset.assigned;
-  updateSelectedList();
-}
-
-/* atualiza lista de selecionados e sinergias */
-function updateSelectedList(){
-  const selected = [];
-  document.querySelectorAll('.slot').forEach(s => {
-    if(s.dataset.assigned){
-      const p = personagens.find(x => x.nome === s.dataset.assigned);
-      if(p) selected.push(p);
+    // Mostrar sinergia de escola somente se >= 4
+    let algumaSinergia = false;
+    for (let escola in contagemEscolas) {
+        if (contagemEscolas[escola] >= 4) {
+            synergyList.innerHTML += `<li>Sinergia de Escola: ${escola}</li>`;
+            algumaSinergia = true;
+        }
     }
-  });
-  refreshSynergies(selected);
-}
 
-/* exibe sinergias simples */
-function refreshSynergies(selected){
-  synergyList.innerHTML = '';
-  if(selected.length === 0){
-    synergyList.innerHTML = '<li>Nenhuma sinergia ativa</li>';
-    return;
-  }
-  const escolas = [...new Set(selected.map(p=>p.escola))];
-  const vinculos = [...new Set(selected.map(p=>p.vinculo))];
+    // Lista de vínculos específicos (pares)
+    const vinculosEspecificos = [
+        ["Tobio Kageyama", "Shoyo Hinata", "Freak Quick"],
+        ["Toru Oikawa", "Hajime Iwaizumi", "Parceria Oikawa"],
+        ["Ryūnosuke Tanaka", "Yū Nishinoya", "Dupla Nishinoya"],
+        ["Kei Tsukishima", "Tadashi Yamaguchi", "Dupla Tsukishima"]
+    ];
 
-  escolas.forEach(e => {
-    const li = document.createElement('li');
-    li.textContent = `Escola: ${e}`;
-    synergyList.appendChild(li);
-  });
-  vinculos.forEach(v => {
-    const li = document.createElement('li');
-    li.textContent = `Vínculo: ${v}`;
-    synergyList.appendChild(li);
-  });
-}
+    vinculosEspecificos.forEach(([p1, p2, nomeVinculo]) => {
+        const nomesSelecionados = selecionados.map(s => s.nome);
+        if (nomesSelecionados.includes(p1) && nomesSelecionados.includes(p2)) {
+            synergyList.innerHTML += `<li>Sinergia de Vínculo: ${nomeVinculo}</li>`;
+            algumaSinergia = true;
+        }
+    });
 
-/* adiciona eventos aos slots */
-document.querySelectorAll('.slot').forEach(slot => {
-  slot.addEventListener('click', (ev) => {
-    ev.stopPropagation();
-    activeSlot = slot;
-    const role = slot.dataset.role || 'Any';
-    makePickerForRole(role);
-    showPicker();
-  });
-
-  // drag over / drop
-  slot.addEventListener('dragover', (ev) => { ev.preventDefault(); slot.style.outline = '2px dashed rgba(255,255,255,0.25)'; });
-  slot.addEventListener('dragleave', (ev) => { slot.style.outline = ''; });
-  slot.addEventListener('drop', (ev) => {
-    ev.preventDefault();
-    slot.style.outline = '';
-    const name = ev.dataTransfer.getData('text/plain');
-    const p = personagens.find(x => x.nome === name);
-    if(p){
-      const role = slot.dataset.role || 'Any';
-      if(role !== 'Any' && role !== p.funcao){
-        const ok = confirm(`${p.nome} não é da função ${role}. Deseja colocar mesmo assim?`);
-        if(!ok) return;
-      }
-      setSlotCharacter(slot, p);
+    // Caso nenhuma sinergia esteja ativa
+    if (!algumaSinergia) {
+        synergyList.innerHTML = "<li>Nenhuma sinergia ativa</li>";
     }
-  });
-
-  // duplo clique para limpar
-  slot.addEventListener('dblclick', (ev) => { ev.stopPropagation(); clearSlot(slot); });
-});
-
-/* fechar picker ao clicar fora */
-document.body.addEventListener('click', (ev) => {
-  if(!ev.target.closest('.slot') && !ev.target.closest('.picker')) {
-    hidePicker();
-    activeSlot = null;
-  }
-});
-
-function showPicker(){ picker.style.display = 'block'; picker.setAttribute('aria-hidden','false'); pickerInner.scrollLeft = 0; }
-function hidePicker(){ picker.style.display = 'none'; picker.setAttribute('aria-hidden','true'); pickerInner.innerHTML = ''; }
-
-/* ESC fecha picker */
-document.addEventListener('keydown', (ev)=>{ if(ev.key === 'Escape'){ hidePicker(); activeSlot = null; } });
-
+}
 </script>
+
 </body>
 </html>
-
