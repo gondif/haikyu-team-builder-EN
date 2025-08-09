@@ -1,321 +1,212 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<title>Haikyu Fly High - Team Builder (layout corrigido)</title>
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta charset="UTF-8">
+<title>Haikyu Fly High - Team Builder</title>
 <style>
-  :root {
-    --bg: #222;
-    --hex-bg: #444;
-    --hex-hover: #555;
-    --panel: #333;
-    --text: #fff;
-  }
+    body {
+        background-color: #222;
+        color: #fff;
+        font-family: Arial, sans-serif;
+        text-align: center;
+    }
 
-  body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--text);
-    font-family: Arial, Helvetica, sans-serif;
-    text-align: center;
-    padding: 20px;
-  }
+    h1 {
+        margin-top: 20px;
+    }
 
-  h1 { margin: 6px 0 18px; }
+    .team-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
+        margin-top: 30px;
+    }
 
-  /* container central com grid 4 colunas.
-     Top row: 3 hexes + 1 spacer (vazio)
-     Bottom row: 4 hexes */
-  .team-layout {
-    display: grid;
-    grid-template-columns: repeat(4, 150px);
-    grid-auto-rows: 200px;
-    gap: 20px;
-    justify-content: center;
-    align-items: start;
-    max-width: calc(150px*4 + 20px*3);
-    margin: 0 auto;
-  }
+    .row {
+        display: flex;
+        gap: 20px;
+    }
 
-  .hex {
-    position: relative;
-    width: 150px;
-    height: 173px;
-    background-color: var(--hex-bg);
-    clip-path: polygon(25% 6.7%, 75% 6.7%, 100% 50%, 75% 93.3%, 25% 93.3%, 0% 50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    overflow: hidden;
-    transition: background .16s ease, transform .12s ease;
-  }
-  .hex:hover { background: var(--hex-hover); transform: translateY(-4px); }
+    /* Só desloca a linha de cima */
+    .top-row {
+        transform: translateX(6px);
+    }
 
-  /* spacer (espaço vazio na top-right) */
-  .hex.spacer {
-    background: transparent;
-    clip-path: none;
-    pointer-events: none;
-  }
+    .hex {
+        position: relative;
+        width: 150px;
+        height: 173px;
+        background-color: #444;
+        clip-path: polygon(25% 6.7%, 75% 6.7%, 100% 50%, 75% 93.3%, 25% 93.3%, 0% 50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background 0.3s;
+        overflow: hidden;
+    }
 
-  .hex img {
-    width: 100%;
-    height: auto;
-    display: block;
-    border-radius: 6px;
-    object-fit: cover;
-  }
+    .hex:hover {
+        background-color: #555;
+    }
 
-  /* rótulo (nome) posicionado abaixo visualmente */
-  .role-label {
-    position: absolute;
-    bottom: -22px;
-    left: 0;
-    right: 0;
-    font-weight: 700;
-    font-size: 13px;
-    color: var(--text);
-    text-align: center;
-  }
+    .hex img {
+        width: 100%;
+        height: auto;
+        border-radius: 6px;
+    }
 
-  /* menu scroll com as imagens filtradas */
-  .scroll-menu {
-    display: none;
-    margin: 18px auto 6px;
-    max-width: calc(150px*4 + 20px*3);
-    background: var(--panel);
-    padding: 10px;
-    border-radius: 8px;
-    overflow-x: auto;
-    white-space: nowrap;
-  }
-  .scroll-menu img {
-    width: 80px;
-    height: 80px;
-    object-fit: cover;
-    margin-right: 8px;
-    cursor: grab;
-    display: inline-block;
-    border-radius: 6px;
-    border: 2px solid transparent;
-  }
-  .scroll-menu img:hover { border-color: yellow; }
+    .role-label {
+        position: absolute;
+        bottom: -20px;
+        font-size: 14px;
+        font-weight: bold;
+        color: #fff;
+    }
 
-  /* painel de sinergias */
-  #synergy-panel {
-    margin: 18px auto;
-    max-width: calc(150px*4 + 20px*3);
-    background: var(--panel);
-    padding: 12px;
-    border-radius: 8px;
-    text-align: left;
-  }
+    #synergy-panel {
+        margin-top: 50px;
+        background-color: #333;
+        padding: 15px;
+        border-radius: 10px;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: left;
+    }
 
-  @media (max-width:700px){
-    .team-layout { grid-template-columns: repeat(2, 150px); gap:14px; }
-    .scroll-menu, #synergy-panel { max-width: 330px; }
-  }
+    .scroll-menu {
+        display: none;
+        margin-top: 10px;
+        max-height: 200px;
+        overflow-y: auto;
+        background-color: #333;
+        padding: 10px;
+        border-radius: 8px;
+    }
+
+    .scroll-menu img {
+        width: 80px;
+        height: auto;
+        cursor: grab;
+        margin: 5px;
+        border: 2px solid transparent;
+    }
+
+    .scroll-menu img:hover {
+        border: 2px solid yellow;
+    }
 </style>
 </head>
 <body>
 
 <h1>Haikyu!! Fly High - Team Builder</h1>
 
-<!-- Grid: top = Setter, MB, WS, spacer ; bottom = Libero, WS, MB, Opposite -->
-<div class="team-layout" id="team">
-  <div class="hex" data-role="Setter"><span class="role-label">Setter</span></div>
-  <div class="hex" data-role="Middle Blocker"><span class="role-label">Middle Blocker</span></div>
-  <div class="hex" data-role="Wing Spiker"><span class="role-label">Wing Spiker</span></div>
-  <div class="hex spacer" aria-hidden="true"></div>
-
-  <div class="hex" data-role="Libero"><span class="role-label">Libero</span></div>
-  <div class="hex" data-role="Wing Spiker"><span class="role-label">Wing Spiker</span></div>
-  <div class="hex" data-role="Middle Blocker"><span class="role-label">Middle Blocker</span></div>
-  <div class="hex" data-role="Opposite"><span class="role-label">Opposite</span></div>
+<div class="team-grid">
+    <div class="row top-row">
+        <div class="hex" data-role="Setter"><span class="role-label">Setter</span></div>
+        <div class="hex" data-role="Middle Blocker"><span class="role-label">Middle Blocker</span></div>
+        <div class="hex" data-role="Wing Spiker"><span class="role-label">Wing Spiker</span></div>
+    </div>
+    <div class="row">
+        <div class="hex" data-role="Libero"><span class="role-label">Libero</span></div>
+        <div class="hex" data-role="Wing Spiker"><span class="role-label">Wing Spiker</span></div>
+        <div class="hex" data-role="Middle Blocker"><span class="role-label">Middle Blocker</span></div>
+        <div class="hex" data-role="Opposite"><span class="role-label">Opposite</span></div>
+    </div>
 </div>
 
-<div class="scroll-menu" id="scrollMenu" aria-hidden="true"></div>
+<div class="scroll-menu" id="scrollMenu"></div>
 
 <div id="synergy-panel">
-  <h2 style="margin:0 0 6px">Sinergias Ativas</h2>
-  <ul id="synergy-list">
-    <li>Nenhuma sinergia ativa</li>
-  </ul>
+    <h2>Sinergias Ativas</h2>
+    <ul id="synergy-list">
+        <li>Nenhuma sinergia ativa</li>
+    </ul>
 </div>
 
 <script>
-/* Personagens (paths esperam pasta img/ no repo) */
 const personagens = [
-  { nome: "Tobio Kageyama", funcao: "Setter", img: "img/kageyamaUR.png", escola: "Karasuno", vinculo: "Freak Quick" },
-  { nome: "Kōshi Sugawara", funcao: "Setter", img: "img/sugawara.png", escola: "Karasuno", vinculo: "Suporte" },
-  { nome: "Kenma Kozume", funcao: "Setter", img: "img/kenmaSP.png", escola: "Nekoma", vinculo: "Time Nekoma" },
-  { nome: "Toru Oikawa", funcao: "Setter", img: "img/oikawa.png", escola: "Aoba Johsai", vinculo: "Parceria Oikawa" },
-  { nome: "Shoyo Hinata", funcao: "Middle Blocker", img: "img/hinata.png", escola: "Karasuno", vinculo: "Freak Quick" },
-  { nome: "Tetsurō Kuroo", funcao: "Middle Blocker", img: "img/kuroo.png", escola: "Nekoma", vinculo: "Time Nekoma" },
-  { nome: "Kei Tsukishima", funcao: "Middle Blocker", img: "img/tsukishima.png", escola: "Karasuno", vinculo: "Dupla Tsukishima" },
-  { nome: "Takanobu Aone", funcao: "Middle Blocker", img: "img/aone.png", escola: "Date Tech", vinculo: "Paredão de Ferro" },
-  { nome: "Wakatoshi Ushijima", funcao: "Wing Spiker", img: "img/ushijima.png", escola: "Shiratorizawa", vinculo: "Capitão" },
-  { nome: "Hajime Iwaizumi", funcao: "Wing Spiker", img: "img/iwaizumi.png", escola: "Aoba Johsai", vinculo: "Parceria Oikawa" },
-  { nome: "Ryūnosuke Tanaka", funcao: "Wing Spiker", img: "img/tanaka.png", escola: "Karasuno", vinculo: "Dupla Nishinoya" },
-  { nome: "Asahi Azumane", funcao: "Wing Spiker", img: "img/asahi.png", escola: "Karasuno", vinculo: "Time Karasuno" },
-  { nome: "Kentarō Kyōtani", funcao: "Opposite", img: "img/kyotani.png", escola: "Aoba Johsai", vinculo: "Time Aoba Johsai" },
-  { nome: "Daichi Sawamura", funcao: "Opposite", img: "img/daichi.png", escola: "Karasuno", vinculo: "Capitão" },
-  { nome: "Yū Nishinoya", funcao: "Libero", img: "img/nishinoya.png", escola: "Karasuno", vinculo: "Dupla Nishinoya" },
-  { nome: "Tadashi Yamaguchi", funcao: "Middle Blocker", img: "img/yamaguchi.png", escola: "Karasuno", vinculo: "Dupla Tsukishima" },
-  { nome: "Issei Matsukawa", funcao: "Middle Blocker", img: "img/matsukawa.png", escola: "Aoba Johsai", vinculo: "Time Aoba Johsai" }
+    { nome: "Tobio Kageyama", funcao: "Setter", img: "img/kageyama.png", escola: "Karasuno", vinculo: "Freak Quick" },
+    { nome: "Kōshi Sugawara", funcao: "Setter", img: "img/sugawara.png", escola: "Karasuno", vinculo: "Suporte" },
+    { nome: "Kenma Kozume", funcao: "Setter", img: "img/kenma.png", escola: "Nekoma", vinculo: "Time Nekoma" },
+    { nome: "Toru Oikawa", funcao: "Setter", img: "img/oikawa.png", escola: "Aoba Johsai", vinculo: "Parceria Iwaizumi" },
+    { nome: "Shoyo Hinata", funcao: "Middle Blocker", img: "img/hinata.png", escola: "Karasuno", vinculo: "Freak Quick" },
+    { nome: "Tetsurō Kuroo", funcao: "Middle Blocker", img: "img/kuroo.png", escola: "Nekoma", vinculo: "Time Nekoma" },
+    { nome: "Kei Tsukishima", funcao: "Middle Blocker", img: "img/tsukishima.png", escola: "Karasuno", vinculo: "Dupla Yamaguchi" },
+    { nome: "Takanobu Aone", funcao: "Middle Blocker", img: "img/aone.png", escola: "Date Tech", vinculo: "Paredão de Ferro" },
+    { nome: "Wakatoshi Ushijima", funcao: "Wing Spiker", img: "img/ushijima.png", escola: "Shiratorizawa", vinculo: "Capitão" },
+    { nome: "Hajime Iwaizumi", funcao: "Wing Spiker", img: "img/iwaizumi.png", escola: "Aoba Johsai", vinculo: "Parceria Oikawa" },
+    { nome: "Ryūnosuke Tanaka", funcao: "Wing Spiker", img: "img/tanaka.png", escola: "Karasuno", vinculo: "Dupla Nishinoya" },
+    { nome: "Kentarō Kyōtani", funcao: "Opposite", img: "img/kyotani.png", escola: "Aoba Johsai", vinculo: "Time Aoba Johsai" },
+    { nome: "Asahi Azumane", funcao: "Wing Spiker", img: "img/asahi.png", escola: "Karasuno", vinculo: "Time Karasuno" },
+    { nome: "Daichi Sawamura", funcao: "Opposite", img: "img/daichi.png", escola: "Karasuno", vinculo: "Capitão" },
+    { nome: "Yū Nishinoya", funcao: "Libero", img: "img/nishinoya.png", escola: "Karasuno", vinculo: "Dupla Tanaka" },
+    { nome: "Tadashi Yamaguchi", funcao: "Middle Blocker", img: "img/yamaguchi.png", escola: "Karasuno", vinculo: "Dupla Tsukishima" },
+    { nome: "Issei Matsukawa", funcao: "Middle Blocker", img: "img/matsukawa.png", escola: "Aoba Johsai", vinculo: "Time Aoba Johsai" }
 ];
 
-/* vínculos por pares */
-const vinculosEspeciais = {
-  "Freak Quick": ["Tobio Kageyama", "Shoyo Hinata"],
-  "Parceria Oikawa": ["Toru Oikawa", "Hajime Iwaizumi"],
-  "Dupla Tsukishima": ["Kei Tsukishima", "Tadashi Yamaguchi"],
-  "Dupla Nishinoya": ["Ryūnosuke Tanaka", "Yū Nishinoya"],
-  "Time Nekoma": ["Kenma Kozume", "Tetsurō Kuroo"],
-  "Time Aoba Johsai": ["Kentarō Kyōtani", "Issei Matsukawa"]
-};
-
-const hexes = Array.from(document.querySelectorAll('.hex'));
-const scrollMenu = document.getElementById('scrollMenu');
+const hexes = document.querySelectorAll('.hex');
 const synergyList = document.getElementById('synergy-list');
+const scrollMenu = document.getElementById('scrollMenu');
+let selecionados = [];
 
-let selecionados = []; // { nome, escola, vinculo, slot }
-
-/* attach listeners (pular spacers) */
 hexes.forEach(hex => {
-  if (hex.classList.contains('spacer')) return;
+    hex.addEventListener('click', () => {
+        const role = hex.getAttribute('data-role');
+        mostrarMenu(role, hex);
+    });
 
-  hex.addEventListener('click', (ev) => {
-    ev.stopPropagation();
-    const role = hex.getAttribute('data-role');
-    mostrarMenu(role, hex);
-  });
-
-  // drag + drop
-  hex.addEventListener('dragover', e => e.preventDefault());
-  hex.addEventListener('drop', e => {
-    e.preventDefault();
-    const nome = e.dataTransfer.getData('text/plain');
-    const personagem = personagens.find(p => p.nome === nome);
-    if (personagem) setPersonagemNoHex(hex, personagem);
-  });
+    hex.addEventListener('dragover', e => e.preventDefault());
+    hex.addEventListener('drop', e => {
+        e.preventDefault();
+        const nome = e.dataTransfer.getData('text');
+        const escolhido = personagens.find(p => p.nome === nome);
+        if (escolhido) {
+            setPersonagemNoHex(hex, escolhido);
+        }
+    });
 });
 
-/* construir e mostrar menu (filtrado por função) */
 function mostrarMenu(role, hex) {
-  scrollMenu.innerHTML = '';
-  const disponiveis = personagens.filter(p => p.funcao === role);
-  disponiveis.forEach(p => {
-    const img = document.createElement('img');
-    img.src = p.img;
-    img.alt = p.nome;
-    img.title = p.nome;
-    img.draggable = true;
-
-    img.addEventListener('click', ev => {
-      ev.stopPropagation();
-      setPersonagemNoHex(hex, p);
-      hideMenu();
+    scrollMenu.innerHTML = '';
+    const disponiveis = personagens.filter(p => p.funcao === role);
+    disponiveis.forEach(p => {
+        const img = document.createElement('img');
+        img.src = p.img;
+        img.alt = p.nome;
+        img.draggable = true;
+        img.title = p.nome;
+        img.addEventListener('click', () => setPersonagemNoHex(hex, p));
+        img.addEventListener('dragstart', e => {
+            e.dataTransfer.setData('text', p.nome);
+        });
+        scrollMenu.appendChild(img);
     });
-
-    img.addEventListener('dragstart', ev => {
-      ev.dataTransfer.setData('text/plain', p.nome);
-      try { ev.dataTransfer.setDragImage(img, 20, 20); } catch(e){}
-    });
-
-    scrollMenu.appendChild(img);
-  });
-
-  scrollMenu.style.display = 'block';
-  scrollMenu.setAttribute('aria-hidden','false');
+    scrollMenu.style.display = 'flex';
 }
 
-/* esconder menu ao clicar fora */
-document.addEventListener('click', ev => {
-  if (!ev.target.closest('.scroll-menu')) hideMenu();
-});
-function hideMenu(){
-  scrollMenu.style.display = 'none';
-  scrollMenu.innerHTML = '';
-  scrollMenu.setAttribute('aria-hidden','true');
-}
-
-/* colocar personagem no hex (remove duplicados e atualiza sinergias) */
 function setPersonagemNoHex(hex, personagem) {
-  if (hex.classList.contains('spacer')) return;
-
-  // se personagem já estava em outro slot, limpar esse slot anterior
-  const existeIdx = selecionados.findIndex(s => s.nome === personagem.nome);
-  if (existeIdx !== -1) {
-    const prev = selecionados[existeIdx];
-    if (prev && prev.slot && prev.slot instanceof Element) {
-      prev.slot.innerHTML = `<span class="role-label">${prev.slot.getAttribute('data-role')}</span>`;
-    }
-    selecionados.splice(existeIdx,1);
-  }
-
-  // se esse slot já tinha outro personagem, remover da lista
-  const prevSlotIdx = selecionados.findIndex(s => s.slot === hex);
-  if (prevSlotIdx >= 0) selecionados.splice(prevSlotIdx,1);
-
-  // atualizar visual
-  hex.innerHTML = `
-    <img src="${personagem.img}" alt="${personagem.nome}">
-    <span class="role-label">${personagem.nome}</span>
-  `;
-
-  // registrar
-  selecionados.push({ nome: personagem.nome, escola: personagem.escola, vinculo: personagem.vinculo, slot: hex });
-  atualizarSinergias();
-}
-
-/* limpar slot com double-click */
-hexes.forEach(hex => {
-  if (hex.classList.contains('spacer')) return;
-  hex.addEventListener('dblclick', ev => {
-    ev.stopPropagation();
-    hex.innerHTML = `<span class="role-label">${hex.getAttribute('data-role')}</span>`;
-    const idx = selecionados.findIndex(s => s.slot === hex);
-    if (idx >= 0) selecionados.splice(idx,1);
+    hex.innerHTML = `<img src="${personagem.img}" alt="${personagem.nome}">
+                     <span class="role-label">${personagem.nome}</span>`;
+    selecionados.push(personagem);
     atualizarSinergias();
-  });
-});
-
-/* sinergias: escola só se >=4 ; vínculos por pares */
-function atualizarSinergias() {
-  synergyList.innerHTML = '';
-  const contagem = {};
-  const nomes = selecionados.map(s => s.nome);
-  let alguma = false;
-
-  selecionados.forEach(s => {
-    contagem[s.escola] = (contagem[s.escola] || 0) + 1;
-  });
-
-  Object.keys(contagem).forEach(escola => {
-    if (contagem[escola] >= 4) {
-      synergyList.innerHTML += `<li>Sinergia de Escola: ${escola} (${contagem[escola]})</li>`;
-      alguma = true;
-    }
-  });
-
-  for (const vinculo in vinculosEspeciais) {
-    const [p1,p2] = vinculosEspeciais[vinculo];
-    if (nomes.includes(p1) && nomes.includes(p2)) {
-      synergyList.innerHTML += `<li>Vínculo: ${vinculo}</li>`;
-      alguma = true;
-    }
-  }
-
-  if (!alguma) synergyList.innerHTML = '<li>Nenhuma sinergia ativa</li>';
 }
 
-/* ESC fecha menu */
-document.addEventListener('keydown', ev => { if (ev.key === 'Escape') hideMenu(); });
-
+function atualizarSinergias() {
+    synergyList.innerHTML = "";
+    const escolas = new Set();
+    const vinculos = new Set();
+    selecionados.forEach(p => {
+        escolas.add(p.escola);
+        vinculos.add(p.vinculo);
+    });
+    escolas.forEach(e => synergyList.innerHTML += `<li>Escola: ${e}</li>`);
+    vinculos.forEach(v => synergyList.innerHTML += `<li>Vínculo: ${v}</li>`);
+}
 </script>
+
 </body>
 </html>
