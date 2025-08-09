@@ -197,7 +197,7 @@ function atualizarSinergias() {
     // Mostrar sinergia de escola somente se >= 4
     let algumaSinergia = false;
     for (let escola in contagemEscolas) {
-        if (contagemEscolas[escola] >= 4) {
+        if (contagemEscolas[escola] >= 5) {
             synergyList.innerHTML += `<li>Sinergia de Escola: ${escola}</li>`;
             algumaSinergia = true;
         }
