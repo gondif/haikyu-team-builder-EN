@@ -2,58 +2,49 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8" />
-<title>Haikyu Fly High - Team Builder (Rascunho)</title>
+<title>Haikyu Fly High - Team Builder (Posições Atualizadas)</title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <style>
   :root{
     --bg:#0f7f7f;
-    --panel:#222;
-    --card:#333;
+    --panel:#111;
+    --card:#222;
     --accent:#fff;
+    --slot-bg: rgba(255,255,255,0.03);
   }
 
-  html,body{
-    height:100%;
-    margin:0;
-    font-family: Inter, Arial, Helvetica, sans-serif;
-    background: var(--bg);
-    color:var(--accent);
-  }
+  html,body{ height:100%; margin:0; font-family: Inter, Arial, Helvetica, sans-serif; background:var(--bg); color:var(--accent); }
 
-  /* fundo central (quadra) */
-  .page {
-    min-height:300vh;
+  .page{
+    min-height:100vh;
     display:flex;
     flex-direction:column;
     align-items:center;
-    gap:45px;
-    padding:45px;
+    gap:14px;
+    padding:18px;
     box-sizing:border-box;
   }
 
-  h1{
-    margin:6px 0 0;
-    text-shadow:0 2px 6px rgba(0,0,0,.5);
-  }
+  h1{ margin:6px 0 0; text-shadow:0 2px 6px rgba(0,0,0,.5); font-size:20px; }
 
-  /* container da quadra (posições absolutas dentro) */
+  /* área da quadra: fundo (coloque img/quadra.png no repo) */
   .court-wrap{
-    width:300%;
-    max-width:7000px;
-    aspect-ratio: 16/6;
+    width:100%;
+    max-width:980px;
+    aspect-ratio: 16/9;
     position:relative;
     background: center/cover no-repeat url("img/quadra.png");
     border-radius:10px;
-    box-shadow:0 6px 18px rgba(0,0,0,.5);
+    box-shadow:0 8px 22px rgba(0,0,0,.45);
     overflow:visible;
   }
 
-  /* padrão dos slots (caixinha que conterá imagem + nome) */
+  /* padrão dos slots */
   .slot {
     position:absolute;
     width:120px;
-    height:150px;
-    background: rgba(0,0,0,0.45);
+    height:140px;
+    background: var(--slot-bg);
     border:2px solid rgba(255,255,255,0.12);
     border-radius:8px;
     display:flex;
@@ -61,26 +52,29 @@
     align-items:center;
     justify-content:flex-start;
     gap:6px;
-    padding:6px;
+    padding:8px;
     box-sizing:border-box;
     cursor:pointer;
-    transition: transform .12s ease, box-shadow .12s ease;
+    transition: transform .12s ease, box-shadow .12s ease, outline .08s;
+    z-index:5;
   }
-  .slot:hover{ transform: translateY(-6px); box-shadow:0 10px 30px rgba(0,0,0,.6); }
+  .slot:hover{ transform: translateY(-6px); box-shadow:0 12px 30px rgba(0,0,0,.6); }
 
-  .slot .role{
+  .slot .role {
+    position:relative;
+    left:0;
     font-size:12px;
     font-weight:700;
     letter-spacing:.6px;
     align-self:flex-start;
-    background:rgba(0,0,0,0.55);
-    padding:3px 6px;
-    border-radius:4px;
+    background:transparent;
+    color:var(--accent);
+    padding-left:2px;
   }
 
   .slot .portrait{
     width:100%;
-    height:88px;
+    height:80px;
     background:linear-gradient(180deg,#222,#111);
     display:flex;
     align-items:center;
@@ -88,44 +82,38 @@
     overflow:hidden;
     border-radius:6px;
   }
-  .slot .portrait img{
-    max-width:100%;
-    max-height:100%;
-    display:block;
-  }
+  .slot .portrait img{ max-width:100%; max-height:100%; display:block; }
 
   .slot .name{
     width:100%;
     font-size:13px;
     text-align:center;
-    margin-top:4px;
+    margin-top:6px;
     word-break:break-word;
     line-height:1.05;
-    min-height:34px; /* garante espaço para nomes maiores */
+    min-height:36px;
   }
 
-  /* bench (banco): os quatro slots adicionais */
+  /* Bench (quatro slots) */
   .bench {
     position:absolute;
+    left:6%;
+    bottom:6%;
     display:flex;
     gap:12px;
-    left:45%;
-    transform:translateX(-50%);
-    bottom:6%;
-    z-index:8;
+    z-index:6;
   }
-  .bench .slot{ width:90px; height:118px; padding:6px; }
+  .bench .slot{ width:72px; height:96px; padding:6px; }
 
-  /* Painel de seleção (scroll horizontal) - aparece quando clicar em um slot */
+  /* Picker / scroller - aparece quando clicar em slot */
   .picker {
-    position:relative;
     width:100%;
-    max-width:1000px;
-    margin:8px 0 0;
+    max-width:980px;
+    margin-top:6px;
   }
   .picker-inner{
     display:flex;
-    gap:8px;
+    gap:10px;
     align-items:center;
     padding:10px;
     background:var(--card);
@@ -135,28 +123,19 @@
   }
   .picker-card{
     flex:0 0 auto;
-    width:78px;
+    width:84px;
     text-align:center;
     padding:6px;
     border-radius:8px;
-    background:rgba(0,0,0,0.35);
+    background:rgba(255,255,255,0.02);
     cursor:grab;
     user-select:none;
+    border:1px solid rgba(255,255,255,0.03);
   }
-  .picker-card img{
-    width:100%;
-    height:64px;
-    object-fit:cover;
-    border-radius:6px;
-    display:block;
-  }
-  .picker-card .pname{
-    font-size:11px;
-    margin-top:6px;
-    line-height:1.0;
-  }
+  .picker-card img{ width:100%; height:64px; object-fit:cover; border-radius:6px; display:block; }
+  .picker-card .pname{ font-size:11px; margin-top:6px; line-height:1.0; color:var(--accent); }
 
-  /* painel de sinergias */
+  /* Synergy panel */
   #synergy-panel{
     width:100%;
     max-width:900px;
@@ -169,95 +148,92 @@
   #synergy-panel h2{ margin:0 0 6px; font-size:16px; }
   #synergy-list{ margin:0; padding-left:18px; }
 
-  /* responsivo */
+  /* Responsivo */
   @media (max-width:720px){
     .slot{ width:92px; height:120px; }
     .slot .name{ min-height:28px; font-size:12px; }
-    .bench{ left:50%; bottom:4%; gap:8px; }
+    .bench{ left:4%; bottom:4%; gap:8px; }
     .picker-card{ width:64px; }
   }
 </style>
 </head>
 <body>
   <div class="page">
-    <h1>Team Builder — Rascunho</h1>
+    <h1>Team Builder — Layout atualizado</h1>
 
-    <!-- quadra com posições absolutas -->
     <div class="court-wrap" id="court">
-
-      <!-- linha de frente (frente da rede) - 3 posições -->
-      <div class="slot" id="slot-front-left" data-role="Wing Spiker" style="top:16%; left:20%;">
-        <div class="role">WS</div>
-        <div class="portrait"></div>
-        <div class="name">Nome</div>
-      </div>
-
-      <div class="slot" id="slot-front-center" data-role="Middle Blocker" style="top:14%; left:42%;">
-        <div class="role">MB</div>
-        <div class="portrait"></div>
-        <div class="name">Nome</div>
-      </div>
-
-      <div class="slot" id="slot-front-right" data-role="Opposite" style="top:16%; left:64%;">
-        <div class="role">OP</div>
-        <div class="portrait"></div>
-        <div class="name">Nome</div>
-      </div>
-
-      <!-- linha de trás (defesa) - 3 posições -->
-      <div class="slot" id="slot-back-left" data-role="Wing Spiker" style="top:44%; left:24%;">
-        <div class="role">WS</div>
-        <div class="portrait"></div>
-        <div class="name">Nome</div>
-      </div>
-
-      <div class="slot" id="slot-back-center" data-role="Setter" style="top:48%; left:44%;">
-        <div class="role">S</div>
-        <div class="portrait"></div>
-        <div class="name">Nome</div>
-      </div>
-
-      <div class="slot" id="slot-back-right" data-role="Middle Blocker" style="top:44%; left:64%;">
-        <div class="role">MB</div>
-        <div class="portrait"></div>
-        <div class="name">Nome</div>
-      </div>
-
-      <!-- líbero -->
-      <div class="slot" id="slot-libero" data-role="Libero" style="top:62%; left:44%;">
+      <!-- Top row (L, WS, OP) -->
+      <div class="slot" id="slot-top-left" data-role="Libero" style="top:6%; left:8%;">
         <div class="role">L</div>
         <div class="portrait"></div>
         <div class="name">Nome</div>
       </div>
 
-      <!-- banco: 4 slots alinhados próximos ao banco -->
+      <div class="slot" id="slot-top-center" data-role="Wing Spiker" style="top:4%; left:42%;">
+        <div class="role">WS</div>
+        <div class="portrait"></div>
+        <div class="name">Nome</div>
+      </div>
+
+      <div class="slot" id="slot-top-right" data-role="Opposite" style="top:6%; left:76%;">
+        <div class="role">OP</div>
+        <div class="portrait"></div>
+        <div class="name">Nome</div>
+      </div>
+
+      <!-- Middle row (two MBs) -->
+      <div class="slot" id="slot-mid-left" data-role="Middle Blocker" style="top:26%; left:30%;">
+        <div class="role">MB</div>
+        <div class="portrait"></div>
+        <div class="name">Nome</div>
+      </div>
+
+      <div class="slot" id="slot-mid-right" data-role="Middle Blocker" style="top:26%; left:62%;">
+        <div class="role">MB</div>
+        <div class="portrait"></div>
+        <div class="name">Nome</div>
+      </div>
+
+      <!-- Lower row: left = SAQUE (Setter/Serve), right = WS -->
+      <div class="slot" id="slot-lower-left" data-role="Setter" style="top:48%; left:18%;">
+        <div class="role">SAQUE<br><small style="font-weight:700;">S</small></div>
+        <div class="portrait"></div>
+        <div class="name">Nome</div>
+      </div>
+
+      <div class="slot" id="slot-lower-right" data-role="Wing Spiker" style="top:48%; left:62%;">
+        <div class="role">WS</div>
+        <div class="portrait"></div>
+        <div class="name">Nome</div>
+      </div>
+
+      <!-- Banco: 4 slots, alinhados na parte inferior esquerda -->
       <div class="bench" id="bench">
         <div class="slot bench-slot" id="bench-1" data-role="Any">
-          <div class="role">Banco</div>
+          <div class="role">BANCO</div>
           <div class="portrait"></div>
           <div class="name">Vago</div>
         </div>
         <div class="slot bench-slot" id="bench-2" data-role="Any">
-          <div class="role">Banco</div>
+          <div class="role">BANCO</div>
           <div class="portrait"></div>
           <div class="name">Vago</div>
         </div>
         <div class="slot bench-slot" id="bench-3" data-role="Any">
-          <div class="role">Banco</div>
+          <div class="role">BANCO</div>
           <div class="portrait"></div>
           <div class="name">Vago</div>
         </div>
         <div class="slot bench-slot" id="bench-4" data-role="Any">
-          <div class="role">Banco</div>
+          <div class="role">BANCO</div>
           <div class="portrait"></div>
           <div class="name">Vago</div>
         </div>
       </div>
+    </div>
 
-    </div> <!-- court-wrap -->
-
-    <!-- painel com scroller de personagens (esconde/mostra conforme slot clicado) -->
-    <div class="picker" id="picker" aria-hidden="true" style="display:none;">
+    <!-- picker (scroll horizontal) -->
+    <div class="picker" id="picker" style="display:none;">
       <div class="picker-inner" id="pickerInner"></div>
     </div>
 
@@ -269,9 +245,7 @@
   </div>
 
 <script>
-/* ====== Dados dos personagens (caminhos esperam pasta img/ no repositório) ======
-   Substitua as imagens na pasta img/ pelos arquivos recortados com os mesmos nomes.
-*/
+/* Dados - caminhos esperam pasta img/ no repositório */
 const personagens = [
   { nome:"Tobio Kageyama", funcao:"Setter", img:"img/kageyamaUR.png", escola:"Karasuno", vinculo:"Freak Quick" },
   { nome:"Kōshi Sugawara", funcao:"Setter", img:"img/sugawara.png", escola:"Karasuno", vinculo:"Suporte" },
@@ -292,16 +266,15 @@ const personagens = [
   { nome:"Issei Matsukawa", funcao:"Middle Blocker", img:"img/matsukawa.png", escola:"Aoba Johsai", vinculo:"Time Aoba Johsai" }
 ];
 
-/* ====== Lógica de interação ====== */
+/* Interações */
 const picker = document.getElementById('picker');
 const pickerInner = document.getElementById('pickerInner');
 const synergyList = document.getElementById('synergy-list');
 
-let selectedSlots = []; // lista de personagens atualmente alocados (objetos)
-let activeSlot = null;  // slot DOM atualmente ativo (clicado)
+let activeSlot = null;
 
+/* monta picker filtrado por função (role) */
 function makePickerForRole(role){
-  // role pode ser "Any" para o banco (mostra todos)
   pickerInner.innerHTML = '';
   const list = role === 'Any' ? personagens : personagens.filter(p => p.funcao === role);
   if(list.length === 0){
@@ -336,25 +309,21 @@ function makePickerForRole(role){
       hidePicker();
     });
 
-    // drag start -> envia nome para o drop target
+    // drag start -> envia nome
     card.addEventListener('dragstart', (ev) => {
       ev.dataTransfer.setData('text/plain', p.nome);
-      // opcional: set drag image
-      try{
-        ev.dataTransfer.setDragImage(img, 30, 30);
-      }catch(e){}
+      try{ ev.dataTransfer.setDragImage(img, 30, 30); }catch(e){}
     });
 
     pickerInner.appendChild(card);
   });
 }
 
-/* coloca personagem visualmente no slot (slot é elemento .slot) */
+/* coloca personagem no slot DOM */
 function setSlotCharacter(slotEl, personagem){
   const portrait = slotEl.querySelector('.portrait');
   const nameEl = slotEl.querySelector('.name');
 
-  // limpa e insere
   portrait.innerHTML = '';
   const img = document.createElement('img');
   img.src = personagem.img;
@@ -363,13 +332,12 @@ function setSlotCharacter(slotEl, personagem){
 
   nameEl.textContent = personagem.nome;
 
-  // registra na lista de selecionados (substitui caso já exista para o mesmo slot)
-  // guardamos referência via attribute data-assigned
+  // guarda nome no atributo para sinergias
   slotEl.dataset.assigned = personagem.nome;
   updateSelectedList();
 }
 
-/* remove personagem do slot (duplo clique) */
+/* limpa slot (duplo clique) */
 function clearSlot(slotEl){
   const portrait = slotEl.querySelector('.portrait');
   const nameEl = slotEl.querySelector('.name');
@@ -379,27 +347,27 @@ function clearSlot(slotEl){
   updateSelectedList();
 }
 
-/* construir selectedSlots a partir dos slots DOM que têm data-assigned */
+/* atualiza lista de selecionados e sinergias */
 function updateSelectedList(){
-  selectedSlots = [];
+  const selected = [];
   document.querySelectorAll('.slot').forEach(s => {
     if(s.dataset.assigned){
       const p = personagens.find(x => x.nome === s.dataset.assigned);
-      if(p) selectedSlots.push(p);
+      if(p) selected.push(p);
     }
   });
-  refreshSynergies();
+  refreshSynergies(selected);
 }
 
-/* monta painel de sinergias simples (escolas e vínculos presentes) */
-function refreshSynergies(){
+/* exibe sinergias simples */
+function refreshSynergies(selected){
   synergyList.innerHTML = '';
-  if(selectedSlots.length === 0){
+  if(selected.length === 0){
     synergyList.innerHTML = '<li>Nenhuma sinergia ativa</li>';
     return;
   }
-  const escolas = [...new Set(selectedSlots.map(p=>p.escola))];
-  const vinculos = [...new Set(selectedSlots.map(p=>p.vinculo))];
+  const escolas = [...new Set(selected.map(p=>p.escola))];
+  const vinculos = [...new Set(selected.map(p=>p.vinculo))];
 
   escolas.forEach(e => {
     const li = document.createElement('li');
@@ -413,11 +381,8 @@ function refreshSynergies(){
   });
 }
 
-/* ====== attach events aos slots (click abre picker, drop aceita drag) ====== */
-const allSlots = document.querySelectorAll('.slot');
-
-allSlots.forEach(slot => {
-  // abrir picker ao clicar
+/* adiciona eventos aos slots */
+document.querySelectorAll('.slot').forEach(slot => {
   slot.addEventListener('click', (ev) => {
     ev.stopPropagation();
     activeSlot = slot;
@@ -426,24 +391,17 @@ allSlots.forEach(slot => {
     showPicker();
   });
 
-  // aceitar drop
-  slot.addEventListener('dragover', (ev) => {
-    ev.preventDefault();
-    slot.style.outline = '2px dashed rgba(255,255,255,0.25)';
-  });
-  slot.addEventListener('dragleave', (ev) => {
-    slot.style.outline = '';
-  });
+  // drag over / drop
+  slot.addEventListener('dragover', (ev) => { ev.preventDefault(); slot.style.outline = '2px dashed rgba(255,255,255,0.25)'; });
+  slot.addEventListener('dragleave', (ev) => { slot.style.outline = ''; });
   slot.addEventListener('drop', (ev) => {
     ev.preventDefault();
     slot.style.outline = '';
     const name = ev.dataTransfer.getData('text/plain');
     const p = personagens.find(x => x.nome === name);
     if(p){
-      // se slot tem role restrito e personagem não bate -> permite apenas se role === Any OR mesmo funcao
       const role = slot.dataset.role || 'Any';
       if(role !== 'Any' && role !== p.funcao){
-        // permitir trocar apenas se usuário confirmar
         const ok = confirm(`${p.nome} não é da função ${role}. Deseja colocar mesmo assim?`);
         if(!ok) return;
       }
@@ -451,44 +409,23 @@ allSlots.forEach(slot => {
     }
   });
 
-  // duplo clique para remover
-  slot.addEventListener('dblclick', (ev) => {
-    ev.stopPropagation();
-    clearSlot(slot);
-  });
+  // duplo clique para limpar
+  slot.addEventListener('dblclick', (ev) => { ev.stopPropagation(); clearSlot(slot); });
 });
 
-/* esconder picker ao clicar fora */
+/* fechar picker ao clicar fora */
 document.body.addEventListener('click', (ev) => {
-  // se clicou em algum slot já tratado, picker mostra; caso contrário, esconde
-  if(!ev.target.closest('.slot') && !ev.target.closest('.picker')){
+  if(!ev.target.closest('.slot') && !ev.target.closest('.picker')) {
     hidePicker();
     activeSlot = null;
   }
 });
 
-/* mostrar / esconder picker */
-function showPicker(){
-  picker.style.display = 'block';
-  picker.setAttribute('aria-hidden','false');
-  // rola para o início da lista
-  pickerInner.scrollLeft = 0;
-}
-function hidePicker(){
-  picker.style.display = 'none';
-  picker.setAttribute('aria-hidden','true');
-  pickerInner.innerHTML = '';
-}
+function showPicker(){ picker.style.display = 'block'; picker.setAttribute('aria-hidden','false'); pickerInner.scrollLeft = 0; }
+function hidePicker(){ picker.style.display = 'none'; picker.setAttribute('aria-hidden','true'); pickerInner.innerHTML = ''; }
 
-/* permitir arrastar do bench para slot e vice-versa via interação já implementada */
-
-/* botão de teclado: ESC fecha picker */
-document.addEventListener('keydown', (ev)=>{
-  if(ev.key === 'Escape') { hidePicker(); activeSlot=null; }
-});
-
-/* inicialização: caso queira preencher com exemplos, descomente/set aqui */
-// setSlotCharacter(document.getElementById('slot-back-center'), personagens.find(p=>p.funcao==='Setter'));
+/* ESC fecha picker */
+document.addEventListener('keydown', (ev)=>{ if(ev.key === 'Escape'){ hidePicker(); activeSlot = null; } });
 
 </script>
 </body>
