@@ -138,6 +138,9 @@
 </style>
 </head>
 <body>
+    <button id="toggle-lang" style="margin-top:15px;">EN</button>
+
+    <h1 id="page-title">Haikyu!! Fly High - Team Builder</h1>
 
 <h1>Haikyu!! Fly High - Team Builder</h1>
 
@@ -591,19 +594,12 @@ const translationsSynergy = {
 let currentLang = localStorage.getItem('lang') || 'pt';
 applyLanguage(currentLang);
 
-document.addEventListener("DOMContentLoaded", () => {
-    const toggleBtn = document.createElement("button");
-    toggleBtn.id = "toggle-lang";
-    toggleBtn.style.marginTop = "15px";
-    toggleBtn.textContent = translationsUI[currentLang]["toggle-lang"];
-    document.body.insertBefore(toggleBtn, document.body.firstChild);
-
-    toggleBtn.addEventListener("click", () => {
-        currentLang = currentLang === 'pt' ? 'en' : 'pt';
-        localStorage.setItem('lang', currentLang);
-        applyLanguage(currentLang);
-        atualizarSinergias();
-    });
+document.getElementById("toggle-lang").addEventListener("click", () => {
+    currentLang = currentLang === 'pt' ? 'en' : 'pt';
+    localStorage.setItem('lang', currentLang);
+    applyLanguage(currentLang);
+    atualizarSinergias();
+});
 });
 
 function applyLanguage(lang) {
