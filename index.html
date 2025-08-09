@@ -135,6 +135,15 @@ const personagens = [
     { nome: "Issei Matsukawa", funcao: "Middle Blocker", img: "img/matsukawa.png", escola: "Aoba Johsai", vinculo: "Time Aoba Johsai" }
 ];
 
+    const vinculosEspeciais = {
+    "Freak Quick": ["Tobio Kageyama", "Shoyo Hinata"],
+    "Parceria Oikawa": ["Toru Oikawa", "Hajime Iwaizumi"],
+    "Dupla Tsukishima": ["Kei Tsukishima", "Tadashi Yamaguchi"],
+    "Dupla Nishinoya": ["Ryūnosuke Tanaka", "Yū Nishinoya"],
+    "Time Nekoma": ["Kenma Kozume", "Tetsurō Kuroo"],
+    "Time Aoba Johsai": ["Kentarō Kyōtani", "Issei Matsukawa"]
+    };
+        
 const hexes = document.querySelectorAll('.hex');
 const synergyList = document.getElementById('synergy-list');
 const scrollMenu = document.getElementById('scrollMenu');
@@ -185,14 +194,35 @@ function setPersonagemNoHex(hex, personagem) {
 
 function atualizarSinergias() {
     synergyList.innerHTML = "";
-    const escolas = new Set();
-    const vinculos = new Set();
+    const contagemEscolas = {};
+    const nomesSelecionados = selecionados.map(p => p.nome);
+    let alguma = false;
+
+    // contar escolas
     selecionados.forEach(p => {
-        escolas.add(p.escola);
-        vinculos.add(p.vinculo);
+        contagemEscolas[p.escola] = (contagemEscolas[p.escola] || 0) + 1;
     });
-    escolas.forEach(e => synergyList.innerHTML += <li>Escola: ${e}</li>);
-    vinculos.forEach(v => synergyList.innerHTML += <li>Vínculo: ${v}</li>);
+
+    // mostrar escola apenas se >= 4
+    Object.keys(contagemEscolas).forEach(escola => {
+        if (contagemEscolas[escola] >= 4) {
+            synergyList.innerHTML += `<li>Escola: ${escola}</li>`;
+            alguma = true;
+        }
+    });
+
+    // vínculos
+    for (const vinculo in vinculosEspeciais) {
+        const [p1, p2] = vinculosEspeciais[vinculo];
+        if (nomesSelecionados.includes(p1) && nomesSelecionados.includes(p2)) {
+            synergyList.innerHTML += `<li>Vínculo: ${vinculo}</li>`;
+            alguma = true;
+        }
+    }
+
+    if (!alguma) {
+        synergyList.innerHTML = "<li>Nenhuma sinergia ativa</li>";
+    }
 }
 </script>
 
