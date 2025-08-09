@@ -69,7 +69,7 @@
         text-align: center;
     }
 
-    /* Banco de reservas */
+    /* Bench de reservas */
     .bench-slot {
         width: 50px;
         height: 67px;
@@ -267,7 +267,7 @@ function addBenchSlot() {
     const benchRow = document.getElementById("bench-row");
     const slot = document.createElement("div");
     slot.className = "player-slot bench";
-    slot.innerHTML = `<div class="bench-slot" data-role="bench"></div><div class="player-info">Banco</div>`;
+    slot.innerHTML = `<div class="bench-slot" data-role="bench"></div><div class="player-info">Bench</div>`;
     benchRow.insertBefore(slot, benchRow.querySelector(".add-slot-btn"));
     attachBenchEvents(slot.querySelector(".bench-slot"));
 }
@@ -285,7 +285,7 @@ function mostrarMenu(role, slot) {
     let disponiveis;
 
     if (role === "bench") {
-        disponiveis = personagens.filter(p => !selecionados.includes(p) && respeitaLimiteBanco(p, slot));
+        disponiveis = personagens.filter(p => !selecionados.includes(p) && respeitaLimiteBench(p, slot));
     } else {
         disponiveis = personagens.filter(p => p.funcao === role && !selecionados.includes(p));
     }
@@ -305,14 +305,14 @@ function mostrarMenu(role, slot) {
     scrollMenu.style.display = 'flex';
 }
 
-function respeitaLimiteBanco(p, slot) {
-    const banco = Array.from(document.querySelectorAll(".bench-slot"))
+function respeitaLimiteBench(p, slot) {
+    const Bench = Array.from(document.querySelectorAll(".bench-slot"))
         .map(s => s.dataset.nome && personagens.find(x => x.nome === s.dataset.nome))
         .filter(Boolean);
 
     if (slot.dataset.nome === p.nome) return true;
 
-    const contagem = banco.reduce((acc, cur) => {
+    const contagem = Bench.reduce((acc, cur) => {
         acc[cur.funcao] = (acc[cur.funcao] || 0) + 1;
         return acc;
     }, {});
