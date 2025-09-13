@@ -5560,7 +5560,7 @@ body.planner-open{ overflow: hidden; }
               <tr style="font-weight:800;">
                 <td>Total</td>
                 <td></td>
-                <td class="right" id="tGanhos">0</td>
+                <td class="right" id="tgains">0</td>
                 <td class="right" id="tGastoBruto">0</td>
                 <td class="right" id="tCashback">0</td>
                 <td class="right" id="tLiquido">0</td>
@@ -5975,7 +5975,7 @@ monthsToRender.forEach(mes=>{
 
 
   // ===== Cálculos =====
-  function ganhosFreePorDia(){
+  function gainsFreePorDia(){
     let total = 0;
     planner.free.forEach(f=>{
       if(!f.Use) return;
@@ -6164,8 +6164,8 @@ let saldo = saldoCristais + saldoTickets;
     extrasTot.copy   += (cbMilExtras.extras?.copy   || 0);
   });
 
-  // --- 3) ganhos por mês (FREE + distribuir CASH a partir da data de início)
-  const ganhoDiaFREE = ganhosFreePorDia();
+  // --- 3) gains por mês (FREE + distribuir CASH a partir da data de início)
+  const ganhoDiaFREE = gainsFreePorDia();
   const start = getPlanStartDate();
   const startMonthIdx = start.getMonth()+1; // 1..12
   const startYear = start.getFullYear();
@@ -6185,7 +6185,7 @@ let saldo = saldoCristais + saldoTickets;
   let prevIdx = startMonthIdx;
 
   // totais
-  let totalGanhos=0, totalGastoBruto=0, totalCashback=0, totalLiquido=0;
+  let totalgains=0, totalGastoBruto=0, totalCashback=0, totalLiquido=0;
 
   for (let i=0;i<order.length;i++){
     const label = order[i];
@@ -6203,7 +6203,7 @@ let saldo = saldoCristais + saldoTickets;
     // dias do mês real
     const dim = daysInMonth(runningYear, mIdx);
 
-    // se o mês é anterior à data de início → pula (sem ganhos, sem custos)
+    // se o mês é anterior à data de início → pula (sem gains, sem custos)
     // Obs: se NÃO quiser pular custos de meses anteriores, troque o 'continue' por 'activeDays=0'.
     if (i < idxStart){
       continue;
@@ -6214,7 +6214,7 @@ let saldo = saldoCristais + saldoTickets;
       ? (mIdx === startMonthIdx ? Math.max(0, dim - (start.getDate() - 1)) : dim) // se o label for o mesmo mês da data
       : dim;
 
-    // ganhos FREE + CASH desse mês (CASH consome 'activeDays' sequencialmente)
+    // gains FREE + CASH desse mês (CASH consome 'activeDays' sequencialmente)
     // FREE do mês (mantém)
 const gFree = Math.round(ganhoDiaFREE * activeDays);
 
@@ -6232,7 +6232,7 @@ let gCash = 0;
   gCash += perDay * diasAtivosNoMes;
 });
 
-const ganhos = gFree + Math.round(gCash);
+const gains = gFree + Math.round(gCash);
 
 
     // custos agregados daquele mês (se não houver, zero)
@@ -6240,14 +6240,14 @@ const ganhos = gFree + Math.round(gCash);
 
     // saldo
     const saldoIni = saldo;
-    saldo = saldo + ganhos - mm.custoLiquido;
+    saldo = saldo + gains - mm.custoLiquido;
 
     // render linha
     const pretty = label.charAt(0).toUpperCase() + label.slice(1);
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${pretty}</td>
-      <td class="right">${ganhos.toLocaleString('pt-BR')}</td>
+      <td class="right">${gains.toLocaleString('pt-BR')}</td>
       <td class="right">${(mm.gastoBruto||0).toLocaleString('pt-BR')}</td>
       <td class="right">${(mm.cashback||0).toLocaleString('pt-BR')}</td>
       <td class="right">${(mm.custoLiquido||0).toLocaleString('pt-BR')}</td>
@@ -6261,7 +6261,7 @@ const ganhos = gFree + Math.round(gCash);
     tbody.appendChild(tr);
 
     // totais (se mantiver rodapé)
-    totalGanhos     += ganhos;
+    totalgains     += gains;
     totalGastoBruto += (mm.gastoBruto||0);
     totalCashback   += (mm.cashback||0);
     totalLiquido    += (mm.custoLiquido||0);
@@ -6269,7 +6269,7 @@ const ganhos = gFree + Math.round(gCash);
 
   // atualiza rodapé se você ainda estiver usando <tfoot> (se não, pode remover)
   const el = (id)=>document.getElementById(id);
-  if (el('tGanhos'))      el('tGanhos').textContent      = totalGanhos.toLocaleString('pt-BR');
+  if (el('tgains'))      el('tgains').textContent      = totalgains.toLocaleString('pt-BR');
   if (el('tGastoBruto'))  el('tGastoBruto').textContent  = totalGastoBruto.toLocaleString('pt-BR');
   if (el('tCashback'))    el('tCashback').textContent    = totalCashback.toLocaleString('pt-BR');
   if (el('tLiquido'))     el('tLiquido').textContent     = totalLiquido.toLocaleString('pt-BR');
