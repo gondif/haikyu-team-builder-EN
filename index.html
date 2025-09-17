@@ -5607,7 +5607,7 @@ body.planner-open{ overflow: hidden; }
 (function(){
   // ===== Configurações =====
   const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  const FREQS  = ['Daily','Weekly','Quinzenal','Monthly'];
+  const FREQS  = ['Daily','Weekly','Biweekly','Monthly'];
   const TYPE_ORDER = { 'Banner 1': 0, 'Rebanner': 1, 'Banner 2': 2 };
   const COLLAPSE_KEY = 'hqPlannerSourcesCollapsed';
   const PLANS_KEY = 'hqPlannerPlansV1';
@@ -5624,7 +5624,7 @@ body.planner-open{ overflow: hidden; }
     {usar:true, nome:'Quiz',                     qtd:10,  freq:'Daily'},
     {usar:true, nome:'Exercises',               qtd:10,  freq:'Daily'},
     {usar:true, nome:'Weekend Bonus',      qtd:120, freq:'Weekly'},
-    {usar:true, nome:'Match Streak',    qtd:640, freq:'Quinzenal'},
+    {usar:true, nome:'Match Streak',    qtd:640, freq:'Biweekly'},
     {usar:true, nome:'Specialty Trial',   qtd:320, freq:'Weekly'},
     {usar:true, nome:'Store banner 1 e 2',   qtd:2500, freq:'Monthly'},
     {usar:true, nome:'Checkin banner 1 e 2',   qtd:1500, freq:'Monthly'},
@@ -5997,7 +5997,7 @@ monthsToRender.forEach(mes=>{
       switch(f.freq){
         case 'Daily': total += q; break;
         case 'Weekly': total += q/7; break;
-        case 'Quinzenal': total += q/14; break;
+        case 'Biweekly': total += q/14; break;
         case 'Monthly': total += q/30; break;
       }
     });
