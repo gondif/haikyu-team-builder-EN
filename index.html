@@ -6740,10 +6740,10 @@ function openStatsBondsModal(){
   const modal = document.createElement('div');
   modal.className  = 'item-modal';
 
-  let html = `<h3>Stats bonds ativos (${list.length})</h3>`;
+  let html = `<h3>Active Stats Bonds (${list.length})</h3>`;
 
   if (list.length === 0){
-    html += `<p style="opacity:.85">Nenhum vínculo de stats está sendo adicionado pela composição atual (titulares + conta).</p>`;
+    html += `<p style="opacity:.85">No stats bonds are active in main court, add characters to the account</p>`;
   } else {
     html += `<div class="stats-bond-list">`;
     list.forEach((b, i) => {
@@ -6780,9 +6780,9 @@ function openStatsBondsModal(){
 
   html += `
     <div class="item-actions">
-      <button id="addOwnedBtn" class="item-btn">Adicionar personagens da conta</button>
-      <button id="clearOwnedBtn" class="item-btn">Limpar tudo</button>
-      <button id="closeStatsModal" class="item-btn">Fechar</button>
+      <button id="addOwnedBtn" class="item-btn">Add Characters to your Account</button>
+      <button id="clearOwnedBtn" class="item-btn">Clear All</button>
+      <button id="closeStatsModal" class="item-btn">Close</button>
     </div>`;
   modal.innerHTML = html;
 
