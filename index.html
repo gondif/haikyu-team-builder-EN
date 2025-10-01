@@ -1205,7 +1205,14 @@ body.modal-open{ overflow: hidden; }
     top: auto !important;
   }
 }
-
+.mini-line{ display:inline-flex; gap:4px; vertical-align:middle; margin-right:6px; }
+.mini-char{ width:24px; height:32px; object-fit:cover; border-radius:4px; box-shadow:0 0 0 1px #444; }
+.top-row-li{ display:flex; align-items:center; gap:6px; justify-content:center; }
+.btn-more{ background:#2a2a2a; color:#ddd; border:1px solid #555; border-radius:8px; padding:2px 8px; cursor:pointer; }
+.btn-imp,.btn-cmt{ margin-left:4px; }
+.char-row { display:flex; align-items:center; justify-content:space-between; gap:.5rem; }
+.char-row .mini-line { display:flex; align-items:center; gap:.5rem; }
+.char-row .char-name { opacity:.9; }
 </style>
 </head>
 <body>
@@ -1215,7 +1222,7 @@ body.modal-open{ overflow: hidden; }
     <button class="close-btn" id="closeSidebar">×</button>
     <h2>Side Menu</h2>
     <ul>
-        <div id="view-stats" style="display:flex;gap:16px;justify-content:center;align-items:center;margin-top:6px;opacity:.95">
+      <div id="view-stats" style="display:flex;gap:16px;justify-content:center;align-items:center;margin-top:6px;opacity:.95">
   <span>Daily Views: <strong id="visits-today">—</strong></span>
   <span>Total: <strong id="visits-total">—</strong></span>
 </div>
@@ -1225,6 +1232,7 @@ body.modal-open{ overflow: hidden; }
         <li><button class="menu-link bond-btn" data-section="schools">🏫 Schools</button></li>
         <li><button class="menu-link bond-btn" data-section="help">ℹ️ Info</button></li>
         <li><button id="openPlannerBtn" class="menu-link bond-btn">💎 Resource Planner</button></li>
+        <li><button id="btnOpenRanking" type="button" data-sidebar-safe="true">🏆 Ranking</button></li>
       </ul>
     <div id="sidebar-content">
         <p>Select an option above.</p>
@@ -1232,6 +1240,7 @@ body.modal-open{ overflow: hidden; }
 </div>
 
 <h1>Haikyu Fly High - Team Builder by Devoy Aces</h1>
+
 
 <div id="multiTeams" class="multi-teams">
   <div id="teamTabs" class="team-tabs"></div>
@@ -1405,7 +1414,10 @@ const characters = [
   {nome:"Perfect toss", descricao:"xxx"}
 ], symbols: [ "img/powersymbol.png","img/settersymbol.png"] }
 ];
-
+window.characters = characters;           // <- essencial para o Import
+// (opcional) se quiser cobrir ambos os nomes:
+window.charactersEN = window.characters;
+window.allCharacters = window.characters;
 const descricoesSinergia = {
 "Karasuno": "Increases ALL players’ Power Attack and Quick Attack Stats by 10%",
 "Nekoma": "Increases ALL players’ Receive Stat by 15%",
@@ -2233,6 +2245,635 @@ let teams = window.teams || [];            // se já existir, reutiliza
 let currentTeamIndex = window.currentTeamIndex || 0;
 let __mtAdding = false;                    // lock anti-duplo clique
 
+// ===== Backend (Apps Script) =====
+const API = 'https://script.google.com/macros/s/AKfycbwSnplPmw7Agru5gA7bU1Gk9_tAQSw8j3ma1WEFOMmlUXqXVBp-Qe4Ey-5xMxMRASS-/exec'; // o mesmo usado no contador de views
+
+// sesssion_id estável por navegador (para cooldown de comentários e analytics)
+const SESSION_KEY = 'hqSessionIdV1';
+const SESSION_ID = (() => {
+  let id = localStorage.getItem(SESSION_KEY);
+  if (!id) { id = 's_' + Math.random().toString(36).slice(2) + Date.now().toString(36); localStorage.setItem(SESSION_KEY, id); }
+  return id;
+})();
+
+// idioma da página -> "ptbr" ou "en"
+function currentLang(){
+  const h = (document.documentElement.lang || '').toLowerCase();
+  if (h.includes('pt')) return 'ptbr';
+  return 'en';
+}
+
+async function apiGet(params){
+  const url = API + (API.includes('?') ? '&' : '?') + params;
+  const r = await fetch(url, {method:'GET', mode:'cors'});
+  return r.json();
+}
+async function apiPost(action, payload){
+  const url = API + (API.includes('?') ? '&' : '?') + 'action=' + encodeURIComponent(action);
+  const body = new URLSearchParams({ payload: JSON.stringify(payload) });
+  const r = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+    body
+  });
+  const text = await r.text();
+  try { return JSON.parse(text); } catch { return { ok:false, raw:text }; }
+}
+
+
+
+// considera “completo” quando os 6 titulares estão preenchidos
+function isTeamComplete(team){
+  const filled = (team.main || []).filter(Boolean).length;
+  return filled === 7; // ajuste se quiser exigir bench também
+}
+
+// serialização dos itens (fallback caso não exista no arquivo)
+function serializeTeamItemsSafe(){
+  try { return (typeof serializeTeamItems === 'function') ? serializeTeamItems() : {}; }
+  catch(e){ return {}; }
+}
+
+// evita spam: só envia se mudou
+let __lastSentHash = null;
+// === Debounce para enviar o time automaticamente ===
+let sendTimer = null;
+
+function scheduleSendTeam(delay = 300){
+  if (sendTimer) clearTimeout(sendTimer);
+  sendTimer = setTimeout(sendTeamIfComplete, delay);
+}
+// chame isto sempre que o grid mudar (adicionar/trocar/remover)
+function onGridChanged(){
+  scheduleSendTeam(300);
+}
+
+
+// substitua sua sendTeamIfComplete por esta
+async function sendTeamIfComplete(){
+  try{
+    // nomes atuais do grid
+    const mainNames = [...document.querySelectorAll('.hex')].map(s=>s.dataset.nome).filter(Boolean);
+    const benchNames = [...document.querySelectorAll('.bench-slot')].map(s=>s.dataset.nome).filter(Boolean);
+
+    const isComplete = mainNames.length === 7; // exatamente 7 titulares
+    // mapeia posição pelo rótulo ao lado/abaixo do slot ou via fallback POS_ORDER
+    const hexes = [...document.querySelectorAll('.hex')];
+    const POS_ORDER = ['S','MB','WS','L','WS','MB','OP']; // já existe no seu arquivo
+
+    const slots = hexes.slice(0, 7).map((el, i) => {
+      const id = el.dataset.key || el.dataset.id || el.dataset.nome || '';
+      // tenta ler o rótulo (S/MB/WS/L/OP)
+      const parent = el.closest('.slot, .slot-wrap, .slot-container, .grid-cell, .hex-wrap') || el.parentElement;
+      const label = parent && parent.querySelector('.pos, .role, .slot-role, .slot-label, .position, .label');
+      const txt = (label?.textContent || el.nextElementSibling?.textContent || '').trim().toUpperCase();
+      const pos = /^(S|MB|WS|L|OP)$/.test(txt) ? txt : (POS_ORDER[i] || 'WS');
+      return { id, pos };
+    }).filter(s => s.id); // só slots preenchidos
+
+    if (isComplete && slots.length === 7){
+      await apiPost('setteam', { session_id: SESSION_ID, team: { slots, bench: benchNames } });
+    } else {
+      await apiPost('clearteam', { session_id: SESSION_ID });
+    }
+  }catch(e){
+    console.warn('sendTeamIfComplete error', e);
+  }
+}
+
+
+
+// pluga nos hooks globais que você já expõe (sem mexer em setCharacter)
+(function hookSends(){
+  const oldAfterAssign = window.afterAssignCharacter;
+  window.afterAssignCharacter = function(el, nome){
+    if (typeof oldAfterAssign === 'function') oldAfterAssign(el, nome);
+    sendTeamIfComplete();
+  };
+  const oldAfterRemove = window.afterRemoveCharacter;
+  window.afterRemoveCharacter = function(el){
+    if (typeof oldAfterRemove === 'function') oldAfterRemove(el);
+    sendTeamIfComplete();
+  };
+})();
+let RANK = { week:[], all:[], chars:[] };
+let SHOWN = { week:5, all:5 };
+
+function fmtTeamRow(t){
+  // miniaturas no item (ver item 3 abaixo para CSS/lookup)
+  const imgs = (t.team?.slots||[]).slice(0,7).map(s=>{
+    const ch   = findCharPreferExact(s.id);
+    const src = ch?.img || '';
+    const title = s.id;
+    return `<img class="mini-char" src="${src}" alt="${title}" title="${title}">`;
+  }).join('');
+  const cnt = t.count ?? t.hits ?? 0;
+  return `
+    <li class="top-row-li">
+      <span class="mini-line">${imgs}</span>
+      <small>x${cnt}</small>
+      <button data-import="${t.team_id}" class="btn-imp">Import</button>
+      <button data-comments="${t.team_id}" class="btn-cmt" title="Comments">💬</button>
+    </li>`;
+}
+window.CHAR_BY_FULL = new Map(
+  (window.CHAR_LIST || []).map(c => [`${c.name} ${c.rarity}`.toUpperCase(), c])
+);
+
+// preferir match EXATO com raridade; se não achar, usa seu fuzzy atual
+function findCharPreferExact(q){
+  const s = String(q || '').trim();
+  if (!s) return null;
+  const exact = window.CHAR_BY_FULL.get(s.toUpperCase());
+  return exact || (typeof findCharByAnyName === 'function' ? findCharByAnyName(s) : null);
+}
+function fmtCharRow(c){
+  // c pode vir como {id,name,count|hits|value|tester,...}
+  const key   = c?.id || c?.name || '';
+  const count = c?.tester ?? c?.value ?? c?.count ?? c?.hits ?? c?.total ?? 0;
+
+  // tenta achar os metadados/imagem do personagem por nome
+  // (usa o mesmo helper que você já usa nos times)
+  const meta = findCharPreferExact(key);
+  const src   = meta?.img || meta?.icon || ''; // fallback se houver outro campo
+  const title = key;
+
+  return `
+    <li class="top-row-li char-row">
+      <span class="mini-line">
+        <img class="mini-char" src="${src}" alt="${title}" title="${title}">
+        <span class="char-name">${title}</span>
+      </span>
+      <small>x${count}</small>
+    </li>
+  `;
+}
+function aggregateCharRankingFromTeams(list){
+  // list: array de objetos de ranking de times (RANK.all ou RANK.week)
+  // soma aparições do personagem em cada envio (ponderado pelo hits/count/tester)
+  const counts = new Map();
+  for (const t of (list || [])){
+    const weight = t?.tester ?? t?.value ?? t?.count ?? t?.hits ?? t?.total ?? 1;
+    const ids = [
+      ...((t?.team?.slots || []).map(s => s?.id).filter(Boolean)),
+      ...((t?.team?.bench || []).filter(Boolean)) // se bench vier como array simples de nomes
+    ];
+    for (const id of ids){
+      // trata nomes de forma estável, sem mesclar UR/SP
+      const key = String(id).trim();
+      counts.set(key, (counts.get(key) || 0) + Number(weight || 1));
+    }
+  }
+  // ordena e retorna no formato esperado pelo render
+  return [...counts.entries()]
+    .sort((a,b)=> b[1]-a[1])
+    .map(([name, tester]) => ({ name, tester }));
+}
+
+function renderRankTeams7d(){
+  const el = document.getElementById('panelRank7d');
+  if(!el) return;
+  el.innerHTML = `
+    <h3 class="top-title">Top Teams (7d)</h3>
+    <ul class="top-list">${ (RANK.week||[]).slice(0, SHOWN.week).map(fmtTeamRow).join('') || '<li>—</li>' }</ul>
+    <div class="center"><button id="wkMore" class="menu-btn">Show More</button></div>
+  `;
+  el.querySelector('#wkMore')?.addEventListener('click', (ev)=>{
+    ev.stopPropagation?.();
+    SHOWN.week += 5;
+    renderRankTeams7d();
+  });
+}
+
+function renderRankTeamsAll(){
+  const el = document.getElementById('panelRankAll');
+  if(!el) return;
+  el.innerHTML = `
+    <h3 class="top-title">Top Teams (All)</h3>
+    <ul class="top-list">${ (RANK.all||[]).slice(0, SHOWN.all).map(fmtTeamRow).join('') || '<li>—</li>' }</ul>
+    <div class="center"><button id="allMore" class="menu-btn">Show More</button></div>
+  `;
+  el.querySelector('#allMore')?.addEventListener('click', (ev)=>{
+    ev.stopPropagation?.();
+    SHOWN.all += 5;
+    renderRankTeamsAll();
+  });
+}
+
+function renderRankCharacters(){
+  const el = document.getElementById('panelRankChar');
+  if(!el) return;
+  el.innerHTML = `
+    <h3 class="top-title">Top Characters</h3>
+    <ul class="top-list">${
+  Array.isArray(RANK?.chars) && RANK.chars.length
+    ? RANK.chars.map(fmtCharRow).join('')
+    : '<li>—</li>'
+}</ul>
+  `;
+}
+function buildCharRankingFromTeams(teamRows){
+  const map = new Map();
+  const add = (name, weight) => {
+    if (!name) return;
+    map.set(name, (map.get(name) || 0) + (weight || 1));
+  };
+
+  (teamRows || []).forEach(t => {
+    const weight = t.tester ?? t.value ?? t.count ?? t.hits ?? t.total ?? 1; // vezes que o time apareceu
+    const slots  = t?.team?.slots || [];   // [{id, pos}]
+    const bench  = t?.team?.bench || [];   // ["nome1","nome2",...]
+
+    // titulares
+    for (const s of slots) add(s?.id || s?.name, weight);
+    // banco
+    for (const b of bench) add(b, weight);
+  });
+
+  // transforma em array ordenado
+  const arr = [...map.entries()]
+    .map(([name, tester]) => ({ name, tester }))   // {name, tester} compatível com fmtCharRow
+    .sort((a,b) => b.tester - a.tester);
+
+  return arr;
+}
+// peso (hits/count/tester/total)
+const weightOfTeam = (t)=>(t?.tester ?? t?.value ?? t?.count ?? t?.hits ?? t?.total ?? 0);
+const weightOfChar = (c)=>(c?.tester ?? c?.value ?? c?.count ?? c?.hits ?? c?.total ?? 0);
+
+// totais (serão preenchidos em loadRankings)
+let TOTALS = { week:0, all:0, chars:0 };
+async function loadRankings(){
+  await ensureCharacterList(); // garante lista p/ thumbs
+  const week = await apiGet('action=top_week&days=7');
+  const allT = await apiGet('action=top_alltime');
+  const topC = await apiGet('action=top_chars&topN=50');
+  RANK.week = week?.top || [];
+  RANK.all  = allT?.top || [];
+  if (!Array.isArray(RANK.chars) || RANK.chars.length === 0){
+  // usa o ALL por padrão para ranking de personagens (pode trocar para week se quiser)
+  RANK.chars = buildCharRankingFromTeams(RANK.all);
+}
+  SHOWN.week = 5; SHOWN.all = 5;
+  TOTALS.week  = (RANK.week  || []).reduce((s,t)=> s + weightOfTeam(t), 0);
+  TOTALS.all   = (RANK.all   || []).reduce((s,t)=> s + weightOfTeam(t), 0);
+TOTALS.chars = (RANK.chars || []).reduce((s,c)=> s + weightOfChar(c), 0);
+  renderRankTeams7d();
+renderRankTeamsAll();
+renderRankCharacters();
+}
+
+// eventos dos botões “ver mais”
+document.addEventListener('click', (ev)=>{
+  if (ev.target?.id === 'wkMore'){ 
+    ev.stopPropagation();
+    SHOWN.week += 5; 
+    renderRankTeams7d();
+    renderRankTeamsAll();
+    renderRankCharacters();
+  }
+  if (ev.target?.id === 'allMore'){ 
+    ev.stopPropagation();
+    SHOWN.all  += 5; 
+    renderRankTeams7d();
+    renderRankTeamsAll();
+    renderRankCharacters();
+  }
+});
+
+async function ensureCharacterList(){
+  if (getCharList().length) return;
+}
+// --------- delegação de eventos (Import / Comments) ----------
+document.addEventListener('click', async (ev)=>{
+  const btn = ev.target.closest('[data-import],[data-comments]');
+  if (!btn) return;
+
+  // evita fechar a lateral/propagar para listeners globais
+  ev.stopPropagation();
+
+  // IMPORTAR TIME
+  if (btn.hasAttribute('data-import')) {
+    const teamId = btn.getAttribute('data-import');
+    try {
+      await ensureCharacterList(); // garante a lista carregada
+      const r = await apiGet('action=getteam&team_id='+encodeURIComponent(teamId));
+      if (!r?.ok || !r.team){ console.warn('getteam fail', r); alert('Não foi possível carregar esse time.'); return; }
+      applyTeamFromServer(r.team); // preenche o grid
+    } catch (e) {
+      console.error('import error', e);
+      alert('Erro ao importar time.');
+    }
+    return;
+  }
+
+  // COMENTÁRIOS
+  if (btn.hasAttribute('data-comments')) {
+    const teamId = btn.getAttribute('data-comments');
+    try {
+      await openCommentsUI(teamId); // abre o modal e carrega comentários
+    } catch(e){
+      console.error('comments error', e);
+      alert('Não foi possível abrir os comentários.');
+    }
+  }
+});
+
+// aplica um time vindo da API ao teu grid
+// ===== helpers =====
+const POS_ORDER = ['S','MB','WS','L','WS','MB','OP'];
+
+// Índice de match exato por nome COMPLETO (preserva UR/SSR/SP)
+(function buildCharFullIndex(){
+  const L = (window.characters || window.charactersEN || window.allCharacters || []);
+  const m = new Map();
+  const put = (k,c)=>{
+    if (!k) return;
+    const key = String(k).trim().toUpperCase().replace(/\s+/g,' ');
+    if (key) m.set(key, c);
+  };
+  for (const c of L){
+    put(c.nome, c);
+    put(c.name, c);
+    put(c.display, c);
+    put(c.id, c);
+  }
+  window.CHAR_FULL = m;
+})();
+
+// Preferir EXATO (sem retirar raridade). Se não achar, cai no fuzzy antigo.
+function findCharPreferExact(q){
+  const s = String(q||'').trim();
+  if (!s) return null;
+
+  // 1) exato (case-insensitive, espaços normalizados)
+  const key = s.toUpperCase().replace(/\s+/g,' ');
+  const hit = window.CHAR_FULL && window.CHAR_FULL.get(key);
+  if (hit) return hit;
+
+  // 2) exato tolerante a acento
+  const norm = (x)=>String(x||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().replace(/\s+/g,' ');
+  if (window.CHAR_FULL){
+    const target = norm(s);
+    for (const [k,v] of window.CHAR_FULL){
+      if (norm(k) === target) return v;
+    }
+  }
+
+  // 3) fallback: fuzzy existente (pode remover UR/SSR/SP etc.)
+  return (typeof findCharByAnyName==='function') ? findCharByAnyName(s) : null;
+}
+
+
+function getHexList(){ return [...document.querySelectorAll('.hex')]; }
+
+function clearGrid(){
+  getHexList().forEach(el => { el.innerHTML=''; delete el.dataset.nome; });
+  document.querySelectorAll('.bench-slot').forEach(el => { el.innerHTML=''; delete el.dataset.nome; });
+  
+}
+
+function norm(s){
+  return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/\s+/g,' ').trim().toLowerCase();
+}
+function canon(s){
+  return norm(String(s||'')
+    .replace(/\s*-\s*(S|MB|WS|L|OP)\b/gi,'')
+    .replace(/\b(UR|SSR|SP)\b/gi,'')
+  );
+}
+function getCharList(){
+  return window.characters || window.charactersEN || window.allCharacters || [];
+}
+function findCharByAnyName(name){
+  const t = canon(name);
+  const L = getCharList();
+  return L.find(c => canon(c.nome)===t) ||
+         L.find(c => canon(c.name)===t) ||
+         L.find(c => canon(c.display)===t) ||
+         L.find(c => canon(c.id)===t) || null;
+}
+
+function nextFreeSlotForPos(pos, usedIdx){
+  const hexes = getHexList();
+
+  // tentar por rótulo do slot
+  for (let i=0;i<hexes.length;i++){
+    if (usedIdx.has(i)) continue;
+    const el = hexes[i];
+    const parent = el.closest('.slot, .slot-wrap, .slot-container, .grid-cell, .hex-wrap') || el.parentElement;
+    const label  = parent && parent.querySelector('.pos, .role, .slot-role, .slot-label, .position, .label');
+    const txt = (label?.textContent || el.nextElementSibling?.textContent || '').trim().toUpperCase();
+    if (['S','MB','WS','L','OP'].includes(txt) && txt === pos) return {el, i};
+  }
+  // fallback por ordem visual fixa
+  for (let i=0;i<hexes.length;i++){
+    if (usedIdx.has(i)) continue;
+    if (POS_ORDER[i] === pos) return {el:hexes[i], i};
+  }
+  return {el:null, i:-1};
+}
+
+function safeSetCharacter(el, ch, pos){
+  try {
+    if (typeof setCharacter === 'function') {
+      setCharacter(el, ch, ch.funcao || ch.role || pos);
+      emitTeamChanged();
+      return true;
+      if (typeof emitTeamChanged==='function');
+    }
+  } catch(e){ console.warn('setCharacter falhou', e); }
+  try {
+    el.innerHTML = `<img src="${ch.img}" alt="${ch.nome||ch.name}">`;
+    el.dataset.nome = ch.nome || ch.name || ch.id;
+    return true;
+  } catch(_) {}
+  return false;
+  
+}
+
+const wait = (ms)=>new Promise(r=>setTimeout(r,ms));
+
+
+// tenta achar o elemento .hex do slot que TEM rótulo == pos (S,MB,WS,L,OP)
+function getSlotElByPos(pos){
+  const hexes = [...document.querySelectorAll('.hex')];
+  // seletores comuns de rótulos sob/ao lado do slot – testamos vários
+  const labelSelectors = ['.pos', '.role', '.slot-role', '.slot-label', '.position', '.label'];
+  for (const el of hexes){
+    const parent = el.closest('.slot, .slot-wrap, .slot-container, .grid-cell, .hex-wrap') || el.parentElement;
+    if (!parent) continue;
+    let labelText = '';
+    for (const sel of labelSelectors){
+      const lab = parent.querySelector(sel);
+      if (lab){ labelText = (lab.textContent||'').trim().toUpperCase(); if (labelText) break; }
+    }
+    // fallback: se o texto do próximo irmão é só "S"/"MB"/etc
+    if (!labelText && el.nextElementSibling){
+      const txt = (el.nextElementSibling.textContent||'').trim().toUpperCase();
+      if (/^(S|MB|WS|L|OP)$/.test(txt)) labelText = txt;
+    }
+    if (labelText === pos) return el;
+  }
+  // não achou por rótulo: tenta por índice fixo (ordem visual)
+  const idx = POS_FALLBACK_ORDER.findIndex(p => p === pos);
+  return hexes[idx] || null;
+}
+
+
+
+// ===== import principal =====
+async function applyTeamFromServer(team){
+  const slots = team.slots || [];
+  const bench = team.bench || [];
+  const used  = new Set();
+
+  clearGrid();
+
+  // titulares, um por vez
+  for (const s of slots){
+    const pos = (s.pos||'').toUpperCase();
+    const ch  = findCharPreferExact(s.id);
+    if (!ch){ console.warn('[import] personagem não encontrado:', s.id); continue; }
+
+    const {el, i} = nextFreeSlotForPos(pos, used);
+    if (!el){ console.warn('[import] slot livre não encontrado para', pos); continue; }
+
+    used.add(i);
+    safeSetCharacter(el, ch, pos);
+    onGridChanged();
+    await wait(40);
+  }
+
+  // banco
+  const benchEls = [...document.querySelectorAll('.bench-slot')];
+  for (let i=0;i<benchEls.length;i++){
+    const name = bench[i] || '';
+    if (!name) continue;
+    const ch = findCharPreferExact(name);
+    if (ch){ safeSetCharacter(benchEls[i], ch, 'BENCH'); await wait(20); }
+  }
+
+  if (typeof updateSynergies==='function') updateSynergies();
+  if (typeof emitTeamChanged==='function') emitTeamChanged(); // conta no ranking
+
+
+  // itens (opcional)
+  try { if (typeof applyTeamItems === 'function') applyTeamItems(team.items||{}); } catch(_){}
+
+  console.log(`[Import] Aplicado: ${applied} titulares`);
+  console.groupEnd();
+
+  // dispara o envio automático para contar no ranking
+  emitTeamChanged();
+  onGridChanged();
+}
+
+
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  // pré-carrega em background; quando abrir a página, já está pronto
+  loadRankings().catch(()=>{});
+});
+setInterval(loadRankings, 60000);
+async function openCommentsUI(team_id){
+  const wrap = document.createElement('div');
+  wrap.className = 'item-modal-backdrop';
+  const box = document.createElement('div');
+  box.className  = 'item-modal';
+  wrap.appendChild(box);
+
+  box.innerHTML = `
+    <h3>Comments</h3>
+    <div id="cList" style="max-height:260px; overflow:auto; border:1px solid #444; padding:8px; border-radius:8px; background:#1e1e1e;"></div>
+    <div style="display:flex; gap:8px; margin-top:8px;">
+      <input id="cNick" placeholder="Nick" style="flex:0 0 160px; padding:6px;">
+      <input id="cMsg"  placeholder="Message..." style="flex:1; padding:6px;">
+      <button id="cSend" class="item-btn">Send</button>
+      <button id="cClose" class="item-btn">Close</button>
+    </div>
+  `;
+
+  async function load(){
+    const lang = currentLang(); // "ptbr" | "en"
+    const r = await apiGet(`action=comments&team_id=${encodeURIComponent(team_id)}&limit=100&lang=${lang}`);
+    const list = (r?.comments||[]);
+    const html = list.map(c=>`<div style="padding:6px 4px;border-bottom:1px solid #333;"><b>${c.nick}</b> — <small>${(c.created_at||'').replace('T',' ')}</small><br>${c.message}</div>`).join('') || '<i>No comments yet.</i>';
+    box.querySelector('#cList').innerHTML = html;
+    // nick lembrado
+    const saved = localStorage.getItem('hqNick');
+    if(saved) box.querySelector('#cNick').value = saved;
+  }
+
+  box.querySelector('#cSend').addEventListener('click', async ()=>{
+    const nick = (box.querySelector('#cNick').value || '').trim().slice(0,20);
+    const message = (box.querySelector('#cMsg').value || '').trim().slice(0,300);
+    if(!message){ box.querySelector('#cMsg').focus(); return; }
+    localStorage.setItem('hqNick', nick || 'Anon');
+    const res = await apiPost('addcomment', { team_id, nick: (nick||'Anon'), message, lang: currentLang(), session_id: SESSION_ID });
+    if(res?.ok){
+      box.querySelector('#cMsg').value = '';
+      load(); // aparece sem recarregar a página
+    }else if(res?.error === 'cooldown'){
+      alert(`Aguarde ${res.seconds_left||120}s para comentar novamente.`);
+    }else{
+      alert('Falha ao enviar comentário.');
+    }
+  });
+  box.querySelector('#cClose').addEventListener('click', ()=> wrap.remove());
+
+  document.body.appendChild(wrap);
+  load();
+}
+function debounce(fn, ms){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), ms);} }
+function emitTeamChanged(){ window.dispatchEvent(new Event('team:changed')); }
+function setupAutoSendObservers(){
+  const sendDebounced = debounce(()=>{ try{ sendTeamIfComplete(); }catch(e){ console.warn(e);} }, 300);
+
+  // 2a) observar alterações nos slots titulares e bench
+  const mo = new MutationObserver(() => onGridChanged());
+  document.querySelectorAll('.hex, .bench-slot').forEach(el=>{
+    mo.observe(el, {
+      attributes:true,
+      attributeFilter:['data-nome','src'],
+      childList:true,
+      subtree:false
+    });
+  });
+
+  // 2b) escutar um evento global (vamos emitir em vários lugares)
+  window.addEventListener('team:changed', () => scheduleSendTeam(300));
+
+  // 2c) integrar com hooks já existentes (se existirem)
+  const oldAfterAssign = window.afterAssignCharacter;
+  window.afterAssignCharacter = function(el, nome){
+    if (typeof oldAfterAssign === 'function') oldAfterAssign(el, nome);
+    emitTeamChanged();
+  };
+  const oldAfterRemove = window.afterRemoveCharacter;
+  window.afterRemoveCharacter = function(el){
+    if (typeof oldAfterRemove === 'function') oldAfterRemove(el);
+    emitTeamChanged();
+  };
+
+  // 2d) primeira checagem (página já pode abrir com time completo)
+  setTimeout(sendDebounced, 500);
+}
+
+document.addEventListener('DOMContentLoaded', setupAutoSendObservers);
+
+// se existir função que carrega time salvo ao trocar “Team 1/2/3…”
+const oldLoadSaved = window.loadSavedTeam;
+window.loadSavedTeam = function(...args){
+  const r = oldLoadSaved ? oldLoadSaved.apply(this, args) : undefined;
+  emitTeamChanged();
+  return r;
+};
+
+// se o botão “+ Team” limpa/muda o grid:
+const plus = document.querySelector('[data-action="add-team"], .btn-add-team, .plus-team');
+if (plus) plus.addEventListener('click', ()=> setTimeout(emitTeamChanged, 200));
 /* ====== FUNÇÕES ORIGINAIS (mantidas) ====== */
 function addBenchSlot() {
     const benchRow = document.getElementById("bench-row");
@@ -2517,6 +3158,7 @@ const ids = ring.map(h => getSlotId(h));
     removeItemGear(h);
     ensureItemGear(h);
     updateItemBadge(h);
+    emitTeamChanged();
   });
 }
 
@@ -3873,7 +4515,15 @@ document.addEventListener("click", (e) => {
     ) {
         return;
     }
-
+    if (
+  e.target.closest('#pageRanking') ||
+  e.target.closest('#btnOpenRanking') ||
+  e.target.closest('#btnRank7d') ||
+  e.target.closest('#btnRankAll') ||
+  e.target.closest('#btnRankChars')
+) {
+  return;
+}
     // Fecha apenas se realmente foi fora
     if (sidebar.classList.contains("open")) {
         sidebar.classList.remove("open");
@@ -5819,9 +6469,44 @@ body.planner-open{ overflow: hidden; }
   #simPane #simInputs label{ display:flex; align-items:center; gap:10px; }
   #simPane #simInputs input{ max-width: 240px; }
 }
+/* 3) (Opcional) CSS leve para os painéis – mantém aparência limpa */
+.rank-panel {
+  background: var(--panel-bg, #1f1f1f);
+  border-radius: 10px;
+  padding: .75rem;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.06) inset;
+}
+.ranking-panels .top-title { /* caso seu render já crie títulos */
+  margin: 0 0 .5rem;
+}
+.btn-row .menu-btn { /* herda o estilo dos outros botões; ajuste se precisar */
+  flex: 1 0 auto;
+}
 
 
 </style>
+<!-- 2) NOVA PÁGINA: Seção de Ranking (mantém o padrão das outras páginas, ex.: .page) -->
+<section id="pageRanking" class="page">
+
+  <h2 class="page-title">Ranking</h2>
+
+  <!-- Descrição (placeholder): você edita depois -->
+  <p class="muted" id="rankingRules">Ranking gathers all info when a team has all court positions filled</p>
+
+  <!-- Barra de filtros (3 botões) no MESMO estilo dos botões do menu -->
+  <div class="btn-row" style="display:flex; gap:.5rem; flex-wrap:wrap; margin: .75rem 0 1rem;">
+    <button id="btnRank7d"   class="menu-btn">Ranking (7d)</button>
+    <button id="btnRankAll"  class="menu-btn">Ranking (All)</button>
+    <button id="btnRankChar" class="menu-btn">Ranking Characters</button>
+  </div>
+
+  <!-- Painéis: renderizamos cada lista num painel e alternamos visibilidade -->
+  <div id="rankingPanels" class="ranking-panels" style="display:grid; gap:1rem;">
+    <div id="panelRank7d"   class="rank-panel"></div>
+    <div id="panelRankAll"  class="rank-panel" hidden></div>
+    <div id="panelRankChar" class="rank-panel" hidden></div>
+  </div>
+</section>
 
 <!-- ===================== PLANEJADOR DE RECURSOS (NOVA PÁGINA) ===================== -->
 <section id="pagePlanner" class="page"
@@ -6757,10 +7442,71 @@ const gains = gFree + Math.round(gCash);
   
   // ===== Boot =====
   function boot(){
+    {
+  const btnOpenRanking = document.getElementById('btnOpenRanking');
+  if (btnOpenRanking){
+    btnOpenRanking.addEventListener('click', (ev)=>{
+      ev.stopPropagation();
+      document.body.classList.remove('show-planner');
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      const rankPg = document.getElementById('pageRanking');
+      if (rankPg){ rankPg.classList.add('active'); rankPg.style.display='block'; }
+     // 1) abre 7d por padrão (sem borbulhar)
+document.getElementById('btnRank7d')?.dispatchEvent(new Event('click', { bubbles:false }));
+
+// 2) rola suavemente até o bloco dos rankings (logo abaixo das sinergias)
+requestAnimationFrame(()=> {
+  // escolha automática do alvo (ajusta se você tiver um id específico)
+  const target =
+    document.getElementById('pageRanking') ||
+    document.getElementById('rankingPanels') ||
+    document.getElementById('panelRank7d');
+
+  if (!target) return;
+
+  // compensa cabeçalho fixo, se existir
+  const sticky =
+    document.querySelector('.topbar, .header, #stickyHeader, .navbar, .nav-top');
+  const isFixed = sticky && getComputedStyle(sticky).position === 'fixed';
+  const offset = isFixed ? sticky.offsetHeight + 12 : 12;
+
+  const y = target.getBoundingClientRect().top + window.pageYOffset - offset;
+  window.scrollTo({ top: y, behavior: 'smooth' });
+});
+    });
+  }
+
+  // botões internos do ranking
+  (function(){
+    const p7 = document.getElementById('panelRank7d');
+    const pA = document.getElementById('panelRankAll');
+    const pC = document.getElementById('panelRankChar');
+    const showOnly = (panel) => [p7,pA,pC].forEach(p => p && (p.hidden = (p!==panel)));
+    document.getElementById('btnRank7d') ?.addEventListener('click', ()=> showOnly(p7));
+    document.getElementById('btnRankAll')?.addEventListener('click', ()=> showOnly(pA));
+    document.getElementById('btnRankChar')?.addEventListener('click', ()=> showOnly(pC));
+  })();
+}
+// Detecta pelo <html lang="...">, com override possível por window.SITE_LANG
+const SITE_LANG = (window.SITE_LANG || document.documentElement.lang || 'pt-BR').toLowerCase();
+// Nome da aba no Sheets
+const COMMENTS_SHEET = SITE_LANG.startsWith('pt') ? 'commentsPTBR' : 'commentsEN';
     const btnOpen = document.getElementById('openPlannerBtn'); if(btnOpen) btnOpen.addEventListener('click', showPlanner);
+    {
+  const srcBtn = document.getElementById('openPlannerBtn')    // use o que já tem estilizado
+             || document.querySelector('#sidebar button, #sidebar .menu-btn');
+  const dstBtn = document.getElementById('btnOpenRanking');
+  if (srcBtn && dstBtn){
+    dstBtn.className = srcBtn.className;   // 🔁 copia as MESMAS classes
+    // se o src tiver um wrapper específico (ex.: display:block 100%), copie também estilos inline úteis
+    if (srcBtn.style.width)  dstBtn.style.width  = srcBtn.style.width;
+    if (srcBtn.style.display)dstBtn.style.display= srcBtn.style.display;
+  }
+}
     const btnBack = document.getElementById('btnVoltarBuilder'); if(btnBack) btnBack.addEventListener('click', showBuilder);
     
-    
+
+
     const btnToggle = document.getElementById('toggleSources');
     if(btnToggle){ btnToggle.addEventListener('click', ()=> setCollapsed(!document.body.classList.contains('planner-collapsed'))); }
     const btnReopen = document.getElementById('reopenSources');
@@ -7288,7 +8034,7 @@ if (window.planner){
 <script>
 (function () {
   // === configure ===
-  const ENDPOINT = 'https://script.google.com/macros/s/AKfycbyN60xk81yZ6aeMoFsx0QSQtHTuQUNqpnuByVvs4Jw_IwNGsYQoKAHfS8Uteal18kJy/exec'; // ex.: https://script.google.com/macros/s/XXX/exec
+  const ENDPOINT = 'https://script.google.com/macros/s/AKfycbwSnplPmw7Agru5gA7bU1Gk9_tAQSw8j3ma1WEFOMmlUXqXVBp-Qe4Ey-5xMxMRASS-/exec'; // ex.: https://script.google.com/macros/s/XXX/exec
   // =================
 
   async function updateCounters() {
@@ -7319,5 +8065,6 @@ if (window.planner){
   }
 })();
 </script>
+
 </body>
 </html>
