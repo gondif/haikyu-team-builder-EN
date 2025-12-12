@@ -1434,7 +1434,7 @@ const characters = [
   {nome:"Cannon-class Power",descricao:"<li>CD: 8 net crossings</li><li>Ushijima [Cultural Festival] will make a power attack with a power of [Power Attack] x 260/275/290/305/320%. If the opponent’s receive is performed by a different player compared to Ushijima's previous spoke, the power of this receive will be reduced by [Receive] x 50%. This effect will last until the ball goes over the net twice.</li>"},
   {nome:"Ressonances",descricao:"<li>S1/3/5: Increases basic stats by 13%.</li><li>S2: [Cannon-class Power] (Skill 4) cooldown reduced by 4 net crossings. When Ushijima [Cultural Festival] uses a power attack, if the resulting power exceeds [Power Attack] x 300%, the power of this power attack will be increased by 30% x [Power Attack].</li><li>S4:At the start of the match, Ushijima [Cultural Festival]'s [Awareness] is increased by 100%. At the end of each rally, Ushijima [Cultural Festival]'s [Awareness] is reduced by 20% and [Power Attack] is increased by 6%. Stacks up to 5 times.</li>"}
 ], symbols: [ "img/powersymbol.png", "img/servesymbol.png" ] },
-    { nome: "Tendo SP", funcao: "MB", img: "img/tendoSP.png", School: "Shiratorizawa", vinculo: ["Really Longtime Friends"],Stats:{Serve:1754,Spike:1881,Set:1748,Receive:1577,Block:1951,Save:1489}, habilidades:[
+    { nome: "Tendo SP", funcao: "MB", img: "img/tendoSP.png", School: "Shiratorizawa", vinculo: ["Really Longtime Friends","Winter Break"],Stats:{Serve:1754,Spike:1881,Set:1748,Receive:1577,Block:1951,Save:1489}, habilidades:[
   {nome:"Intuitive Block",descricao:"Tendo (Winter Break)’s [Block] increases by 12/15/18%. When Tendo (Winter Break) uses [Awareness], the chance of triggering a Nice Play for Receive / Cover / Block increases. At the start of the match, Tendo (Winter Break)’s [Reflex] is reduced to 0%, and for every 1% it is reduced, his [Spirit] increases by 2%."},
   {nome:"Sharp Attack",descricao:"Tendo (Winter Break) performs a quick attack with power equal to [Quick Attack] × 140/150/160%. If this quick-attack power exceeds [Quick Attack] × 200%, then [Quick Attack] increases by 20%. This effect lasts until the ball crosses the net 8 times."},
   {nome:"Non Convencional Style",descricao:"At the start of the match, Tendo (Winter Break)’s [Awareness] increases by 50%. When Tendo (Winter Break) performs a Nice Play, his [Awareness] decreases by 10%, and his [Block] increases by 3/4/5%. This can stack up to 6 stacks. When Tendo (Winter Break) performs a Nice Play, the skill power increases by 65% of the corresponding parameter. If it does not become a Nice Play, the skill power decreases by 85% of the corresponding parameter. When an ally activates their Ultimate Skill, that ally gains 1 stack of [Synergy]. When the ally reaches 2 stacks of [Synergy], all [Synergy] stacks are reset, and that ally’s [Attack Technique] and [Defense Technique] increase by 15%. This effect lasts for 2 rallies. Your team’s Morale increases by 10."},
@@ -1448,13 +1448,20 @@ const characters = [
   {nome:"Skill 4",descricao:"Ginjima performs a power spike with 260/280/300/320/340% of his [Power Attack] strength. The opponent blocker and/or receiver lose 8 stamina. If his team's attribute is advantageous, his [Attack Technique] increases by 20%."},
   {nome:"Ressonances",descricao:"<li>S1/3/5: Increases basic stats by 13%.</li><li>S2:Ginjima is unaffected by debuff effects. When Ginjima's power spike results in a critical hit, his next power spike is performed with +60% of his [Power Attack] stat.</li><li>S4:The cooldown for his ult is changed to 4 net crossings.[Unlimited Attack] effect change:The condition for increasing [Awareness] and [Strength] is modified from [first two power spikes per set] to [first three power spikes per set]. When Ginjima performs a power spike, the next teammate to perform a spike (Power/Quick Attack) will perform the spike with +50% more of their corresponding [Power Attack]/[Quick Attack].</li>"}
 ], symbols: [ "img/powersymbol.png","img/receivesymbol.png" ] },
-    { nome: "Atsumu SP", funcao: "S", img: "img/atsumuSP.png", School: "Inarizaki", vinculo: ["VVV"],Stats:{Serve:1887,Spike:1744,Set:1951,Receive:1578,Block:1755,Save:1485}, habilidades:[
+    { nome: "Atsumu SP", funcao: "S", img: "img/atsumuSP.png", School: "Inarizaki", vinculo: ["Winter Break","Strongest High School Twins"],Stats:{Serve:1887,Spike:1744,Set:1951,Receive:1578,Block:1755,Save:1485}, habilidades:[
   {nome:"Free play",descricao:"Miya Atsumu's [Set] and [Serve] are increased by ##%. At the start of each point, any player with an [Awareness] below ##% will gain the [Insight] effect. This effect increases the players [Attack Technique] and [Defensive Technique] by ##%."},
   {nome:"Overwhelming Serve",descricao:"Miya Atsumu alternates between a float and a jump top (similarly to his UR version) Float serve - Miya Atsumu performs a flat serve with ##% of his [Serve], opponents may not use their spike ultimates for # net crossings. Jump Top - Miya Atsumu performs a Jump Top with ##% of his [Serve], opponents may not use their receive ultimates for # net crossings. "},
   {nome:"Intuition Setting",descricao:"Miya Atsumu's first set of every point has its [Set] increased by ##%. When Miya Atsumu activates Reflexive Setting, the [Attack Technique] and [Defensive Technique] of teammates with the [Insight] effect will be increased by ##%. If the [Attack Technique] of a teammate performing a Spike is above ##%, this Spike will always bo a Critical Play."},
   {nome:"Reflexive Set",descricao:"Miya Atsumu will perform a set with power equal to ##% of his [Set] stat. If Miya Atsumu's [Attack Technique] is above a ##%, his next set is guaranteed to be critical."},
   {nome:"Ressonances",descricao:"xxx"}
 ], symbols: [ "img/quicksymbol.png","img/servesymbol.png","img/settersymbol.png" ] },
+    { nome: "Osamu SP", funcao: "OP", img: "img/osamuSP.png", School: "Inarizaki", vinculo: ["Winter Break","Strongest High School Twins"],Stats:{Serve:1766,Spike:1967,Set:1841,Receive:1573,Block:1750,Save:1490}, habilidades:[
+  {nome:"High Speed Attack",descricao:"Miya Osamu (Winter Break)'s [Quick Attack] is increased by 30% of his [Set] stat(maximum of +1000 increase).At the start of the match, Miya Osamu (Winter Break)'s [Awareness] is decreased to 0; for every 1% awareness lost, gain 2% [Quick Attack].At the end of each rally, Miya Osamu (Winter Break)'s [Awareness] is reset to 0."},
+  {nome:"Expert Set",descricao:"Miya Osamu (Winter Break) will set with power equal to 150% of his [Set] stat. When Miya Osamu (Winter Break) is on the court, and an ally activates a set skill, the power of the Skilled Set will increase by +30/40/50% of his [Set] stat, up to a max of 210/230/250% increase."},
+  {nome:"Tactical Adjustment",descricao:"When Miya Osamu (Winter Break) is on the court, and an ally activates a set skill, that ally gains +2% [Attack Technique] and +2% [Defense Technique], stacking up to 4 times. When Miya Osamu (Winter Break) activates an Ultimate, his [Attack Technique] will increase by 50%. This effect lasts for 2 net crossings.When the power of Skilled Set is above 300% of his [Set] stat, Miya Osamu (Winter Break) will gain +50% [Set] and Skilled Set will be considered a special move."},
+  {nome:"Quick that Lures the Opponent",descricao:"Miya Osamu (Winter Break) will perform a quick attack with 255% of his [Quick Attack]. If his own [Attack Technique] is above 40%, this quick attack will be performed with an additional 60% of his [Quick Attack] and cannot be blocked."},
+  {nome:"Ressonances",descricao:"<li>S1/3/5: Increases basic stats by 13%.</li><li>S2:When an ally activates a set skill while Osamu Miya (Winter Break) is on the court, the ally's [Quick Attack] is increased by 10%. This effect can be increased by up to 30%. This effect lasts for one rally. Osamu Miya (Winter Break)'s [Quick Attack] is increased by an additional 5%. This can be increased by up to 15%.</li><li>S4:At the start of the match, the power of the [Expert Set] is increased by [Set] x 150%. When Osamu Miya (Winter Break) sets, the [Attack Technique] of the member who spikes (Power Attack/Quick Attack) is increased by Osamu Miya (Winter Break)'s [Attack Technique] x 60%. Up to 60% increase is possible. This effect lasts for 2 net crossings.</li>"}
+], symbols: [ "img/quicksymbol.png","img/settersymbol.png" ] },
 ];
 /*{ nome: " SP", funcao: "S", img: "img/x.png", School: "x", vinculo: ["x"],Stats:{Serve:1,Spike:1,Set:1,Receive:1,Block:1,Save:1}, habilidades:[
   {nome:"x",descricao:"x"},
@@ -1530,6 +1537,8 @@ const descricoesSinergia = {
 "Rivals of Aoba Jousai":"When Ushijima Wakatoshi SP and Oikawa SP are on the court, Oikawa’s [Set] and [Serve] increase.When Oikawa SP sets and Ushijima SP performs a power spike, gain 1 stack of the [Attack Rhythm] effect.",
 "Cultural Festival":"When a member holding the [Ball Possession] buff is on the court, Oikawa (Cultural Festival) and Ushijima (Cultural Festival) increase the stamina recovery of all team members by 2%.During rallies, when the ball crosses the net twice, all members on the court gain +4% [Power] and [Receive].Can stack up to 4 times.",
 "Really Longtime Friends":"When Ushijima Wakatoshi (Cultural Festival) receives a debuff, Tendo (Winter Break)’s [Block] and [Quick Attack] increase by 4%.This effect can stack up to a maximum of 12%.When Tendo (Winter Break)’s block results in a Nice Play, Ushijima (Cultural Festival)’s Power Attack increases by [Power Attack] × 10%.This effect lasts for 1 rally.",
+"Winter Break":"If Atsumu SP and Osamu SP are split in the front and back court, their [Strength] increase by 30%. At the end of each rally, Tendo SP's [Awareness] will decrease to 0 and his [Defensive Technique] will increase by 10%. Up to 3 stacks.When Tendo SP touches the ball for the first time in each rally, it will always be critical. At the start of a rally, the [Offensive Technique] and [Defensive Technique] of all team members increases by 2% x the number of (Winter Break) members. Up to 12% increase is possible.",
+"Strongest High School Twins":"At the start of the match, Osamu SP gains one stack of [Resourcefulness]. After Atsumu SP and Osamu SP each sets a ball once, allies [Attack Technique] and [Defensive Technique] are increased by 12.5%. This effect lasts for 1 rally.",
 };
     
 /** Catálogo de MEMÓRIAS (exemplos; ajuste/expanda à vontade) */
@@ -2148,10 +2157,20 @@ img:"img/memories/MemoOhiraSSR.png"
       Serve:{flat:765}, Spike:{flat:838}, Set:{flat:583},
       Receive:{flat:838}, Block:{flat:656}, Save:{flat:619}
     },
-    desc:"",
+    desc:"The member who equips this Memory gets [Set] +24%. At the start of a rally, allied members whose [Awareness] is 50% or lower get Main Parameters +7%, and allied members whose [Awareness] is 30% or lower additionally get [Power Attack]/[Quick Attack] +10%.",
     img:"img/memories/MemoAtsumuSP.png"
   },
-
+{
+    id:"mem_osamuSP",
+    name:"Osamu SP",
+    positions:["OP"],
+    bonus:{
+      Serve:{flat:765}, Spike:{flat:838}, Set:{flat:583},
+      Receive:{flat:838}, Block:{flat:656}, Save:{flat:619}
+    },
+    desc:"The member who equips this Memory gets [Quick Attack] +12%.When an ally performs a Toss, that member’s [Power] +2%, up to a maximum of 15 stacks.When that member performs a Toss, they gain an additional 2 stacks.",
+    img:"img/memories/MemoOsamuSP.png"
+  },
 
 ];
 
@@ -2325,6 +2344,9 @@ const setCatalog = [
   "From Great Ace to Ace": {"Ushijima SP": "Power Attack +5/7/9/12/15, Power Attack +1/2/3/4/5%","Goshiki SSR": "Power Attack +5/7/9/12/15, Power Attack +1/2/3/4/5%"},
   "‘Ushiwaka’ and ‘Manager’": {"Ushijima SP": "Receive +5/7/9/12/15, Receive +1/2/3/4/5%","Ohira SSR": "Receive +5/7/9/12/15, Receive +1/2/3/4/5%"},
   "Inarizaki 5": {"Atsumu UR": "Set +5/7/9/12/15, Set +1/2/3/4/5%","Osamu UR": "Quick Attack +5/7/9/12/15, Quick Attack +1/2/3/4/5%","Rintaro SSR": "Quick Attack +5/7/9/12/15, Quick Attack +1/2/3/4/5%","Ginjima SP": "Power Attack +5/7/9/12/15, Power Attack +1/2/3/4/5%","Yuto R": "Serve +5/7/9/12/15, Serve +1/2/3/4/5%"},
+  "Strongest High School Twins": {"Osamu SP": "Toss +5/7/9/12/15, Toss +1/2/3/4/5%","Rintaro SSR": "Quick Attack +5/7/9/12/15, Quick Attack +1/2/3/4/5%"},
+  "Volleyball Club Friends": {"Osamu SP": "Toss +5/7/9/12/15, Toss +1/2/3/4/5%","Atsumu SP": "Quick Attack +5/7/9/12/15, Quick Attack +1/2/3/4/5%", "Ojiro SSR": "Power Attack +5/7/9/12/15, Power Attack +1/2/3/4/5%"},
+
     };
 window.STATS_BOND_MEMBERS = {
   // Exemplo; substitua pelo seu conteúdo completo:
@@ -2403,6 +2425,8 @@ window.STATS_BOND_MEMBERS = {
   "From Great Ace to Ace": ["Ushijima SP, Goshiki SSR"],
   "‘Ushiwaka’ and ‘Manager’": ["Ushijima SP,Ohira SSR"],
   "Inarizaki 5":["Atsumu UR,Osamu UR,Rintaro SSR,Ginjima SP,Yuto R"],
+  "Strongest High School Twins": ["Osamu SP,Rintaro SSR"],
+  "Volleyball Club Friends": ["Osamu SP,Atsumu SP,Ojiro SSR"],
 };
 
 let selecionados = [];
@@ -3412,6 +3436,7 @@ function updateSynergies() {
       "Swimming",  
      "Twin Heads",
      "Cultural Festival",
+     "Winter Break",
     ]);
 
     const DEFAULT_BOND_MIN = 2; // all bonds default to 2 unless listed above
