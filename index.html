@@ -1462,20 +1462,23 @@ const characters = [
   {nome:"Quick that Lures the Opponent",descricao:"Miya Osamu (Winter Break) will perform a quick attack with 255% of his [Quick Attack]. If his own [Attack Technique] is above 40%, this quick attack will be performed with an additional 60% of his [Quick Attack] and cannot be blocked."},
   {nome:"Ressonances",descricao:"<li>S1/3/5: Increases basic stats by 13%.</li><li>S2:When an ally activates a set skill while Osamu Miya (Winter Break) is on the court, the ally's [Quick Attack] is increased by 10%. This effect can be increased by up to 30%. This effect lasts for one rally. Osamu Miya (Winter Break)'s [Quick Attack] is increased by an additional 5%. This can be increased by up to 15%.</li><li>S4:At the start of the match, the power of the [Expert Set] is increased by [Set] x 150%. When Osamu Miya (Winter Break) sets, the [Attack Technique] of the member who spikes (Power Attack/Quick Attack) is increased by Osamu Miya (Winter Break)'s [Attack Technique] x 60%. Up to 60% increase is possible. This effect lasts for 2 net crossings.</li>"}
 ], symbols: [ "img/quicksymbol.png","img/settersymbol.png" ] },
-    { nome: "Hirugami SP", funcao: "MB", img: "img/hirugamiSP.png", School: "x", vinculo: ["x"],Stats:{Serve:1,Spike:1,Set:1,Receive:1,Block:1,Save:1}, habilidades:[
-  {nome:"Block that applies pressure",descricao:"Strenthen allies"},
-  {nome:"Follow-up spike",descricao:"Quick attack, stats up"},
-  {nome:"Unwavering block",descricao:"Strenthen allies, reduces CD"},
-  {nome:"Wall to prevent attacks",descricao:"Block, stats up, special move"},
-  {nome:"Ressonances",descricao:"xxx"}
+    { nome: "Korai SP", funcao: "WS", img: "img/koraiSP.png", School: "Kamomedai", vinculo: ["Winter Sports"],Stats:{Serve:1854,Spike:1952,Set:1529,Receive:1766,Block:1810,Save:1494}, habilidades:[
+  {nome:"Main Player",descricao:"When an ally with a blocking skill touches the ball, that ally's [Block], [Power Attack], and [Quick Attack] stats increase by 4/5/6%. This effect stacks up to 3 times and lasts for 2 rallies. If that ally has a blocking ultimate, their [Block], [Power Attack], and [Quick Attack] stats increase by an additional 4/5/6%. This effect also stacks up to 3 times and lasts for 2 rallies."},
+  {nome:"Versatile Play",descricao:"CD: 8 . Korai Hoshiumi (Winter Sports) performs a spike serve with [Serve] x 140/160/180%. Korai Hoshiumi's [Power Attack] and [Quick Attack] are increased by 1000. This effect lasts for 1 rally.Receive: Korai Hoshiumi (Winter Sports) performs a receive with [Receive] x 140/160/180%. If his team type is Block or Quick Attack, Korai Hoshiumi's [Block] is increased by 3000(doesn’t stack)Block: Korai Hoshiumi (Winter Sports) performs a block with [Block] x 140/160/180%. If his team type is Spike or Receive, Korai Hoshiumi's [Receive] is increased by 3000(doesn’t stack).
+"},
+  {nome:"All-Rounder",descricao:"When an ally activates a skill that matches your team type, Korai Hoshiumi (Winter Sports) gains 2 stacks of [Versatile]. Each stack of the [Versatile] increases main parameters by 2.5%. Max 10 stacks. When Korai Hoshiumi (Winter Sports) activates an ultimate that matches the team type, he gains an additional stack of the [Versatile]. When Korai Hoshiumi (Winter Sports) activates a skill, [Awareness] and [Reflex] are increased by 40/50/70%. For each stack of [Versatile], [Awareness] and [Reflex] increases by an additional 20%. This effect lasts for 2 net crossings. If Korai Hoshiumi's (Winter Sports) [Awareness] exceeds 105%, [Strength] increases by 50%. This effect lasts for one rally. If [Reflex] exceeds 100%, [Spirit] increases by 70%. This effect lasts for one rally. (this does not stack)If your team type is Block or Quick, Korai Hoshiumi's [Block] increases by 200%. If your team type is Power or Receive, Korai Hoshiumi's [Receive] increases by 200%.
+"},
+  {nome:"Point Getter",descricao:"CD: 8 . Korai Hoshiumi (Winter Sports) performs a spike with [Power Attack] x 275/290/305/320/335%. If your team's type is Block or Quick , Korai Hoshiumi's [Power Attack] increases by 5% for every 500 points of [Quick Attack]. Max 60%. This effect lasts for 2 net crossings. This is also treated as a Quick Attack skill. If your team's type is Power or Receive, the power of this attack increases by [Power Attack] x 50%. If this results in a crit, the power increases by an additional [Power Attack] x 50%.
+"},
+  {nome:"Ressonances",descricao:"<li>S1/3/5: Increases basic stats by 13%.</li><li>S2:When Korai Hoshiumi (Winter Sports) uses Versatile Play, his [Power Attack] increases by 50%. Max 150%. This effect lasts for one rally. When Korai Hoshiumi (Winter Sports) uses Point Getter, his [Power Attack] increases by an additional 50%. Max 150%. This effect also lasts for one rally. If you have type advantage, Korai Hoshiumi (Winter Sports)'s [Power Attack] stat increases by 20%. Stats that match his team type are further increased by 20%.</li><li>S4:When Korai Hoshiumi (Winter Sports)'s activates "Versatile Play" (Skill 2), it will always result in a crit. All skills included in "Versatile Play" are treated as ultimates. When Korai Hoshiumi (Winter Sports)'s ultimate is activated, [Strength] and [Spirit] increase by 40%. Max 200%. This effect lasts for one rally.</li>"}
+], symbols: [ "img/blocksymbol.png","img/servesymbol.png","img/receivesymbol.png","img/quicksymbol.png","img/powersymbol.png" ] },
+    { nome: "Hirugami SP", funcao: "MB", img: "img/hirugamiSP.png", School: "Kamomedai", vinculo: ["Winter Sports"],Stats:{Serve:1762,Spike:1880,Set:1748,Receive:1573,Block:1952,Save:1490}, habilidades:[
+  /* ==missing name and text== */{nome:"Skill 1",descricao:"Sachiro Hirugami (Winter Sports)'s [Block] increases by 6/8/10% at the start of each rally, up to 6 stacks. While Sachiro Hirugami (Winter Sports) is on the court, at the start of a rally, if the previous rally had 8 or more net crossings, players on your side have their Block Ultimate cooldown limit reduced by 4 net crossings. If the previous rally had fewer than 8 net crossings, your players' Basic Stats increases by 15%. Both effects last for the rest of the set, and don’t stack, and"},
+  {nome:"Follow-Up Spike",descricao:"Sachiro Hirugami (Winter Sports) performs a Quick Attack with 140/160/180% of his [Quick Attack] stat. When Sachiro Hirugami (Winter Sports) casts ATTACK-STOPPING WALL, if Follow-Up Spike is not on cooldown, Sachiro Hirugami (Winter Sports)'s [Defensive Technique] increases by 10% for 2 net crossings and Follow-Up Spike goes on cooldown."},
+  /* ==missing name== */{nome:"Skill 3",descricao:"While Sachiro Hirugami (Winter Sports) is on the court, he gains 1 stack of [Switch] when a player on your side touches the ball. For each stack of [Switch], Sachiro Hirugami (Winter Sports)'s [Block] increases by 5%.At the end of each rally, all stacks of [Switch] are consumed and for each stack consumed, all players on your side have their [Attack Technique] and [Defense Technique] increase by 4.5/5/5.5%, up to 60%, and lasting for 1 point.At the start of a match, the cooldown limit of Attack-Stopping Wall is reduced by 2 net crossings.(Reduces his cooldown to 10)"},
+  {nome:"Attack-Stopping Wall",descricao:"Cooldown: 12. Sachiro Hirugami (Winter Sports) performs a Block with 275/290/305/320/335% of his [Block] stat. If the opponent performs a Critical Spike, Sachiro Hirugami (Winter Sports)'s [Reflex] increases by 100%."},
+  {nome:"Ressonances",descricao:"<li>S1/3/5: Increases basic stats by 13%.</li><li>S2:If the opponent performs a Critical Spike, the cooldown of Attack-Stopping Wall is reduced by 2 net crossings and Sachiro Hirugami (Winter Sports)'s [Spirit] increases by 40% for 2 net crossings.Sachiro Hirugami (Winter Sports) performs a Jump Floater with 200% of his [Serve] stat. Your opponent's Team Morale reduces by 40, and they cannot gain Team Morale for 1 rally. This is treated as a serve skill and has a cooldown of 6 net crossings.</li><li>S4:Sachiro Hirugami (Winter Sports) participates in a 2 or 3-man block, the Basic Stats of your players with Block Skills increase by 20%. Your front row players have their [Block] and [Quick Attack] increase by an additional 2000. This effect lasts for 1 rally.For each stack of [Switch] consumed, your players' [Reflex] increases by 10% and [Spirit] is increased by 6%, both last for 1 rally.</li>"}
 ], symbols: [ "img/blocksymbol.png","img/quicksymbol.png" ] },
-    { nome: "Hoshiumi SP", funcao: "WS", img: "img/hoshiumiSP.png", School: "x", vinculo: ["x"],Stats:{Serve:1,Spike:1,Set:1,Receive:1,Block:1,Save:1}, habilidades:[
-  {nome:"x",descricao:"x"},
-  {nome:"x",descricao:"x"},
-  {nome:"x",descricao:"x"},
-  {nome:"x",descricao:"x"},
-  {nome:"Ressonances",descricao:"xxx"}
-], symbols: [ "img/powersymbol.png","img/receivesymbol.png", "img/blocksymbol.png","img/servesymbol.png","img/quicksymbol.png" ] },
 ];
 /*{ nome: " SP", funcao: "S", img: "img/x.png", School: "x", vinculo: ["x"],Stats:{Serve:1,Spike:1,Set:1,Receive:1,Block:1,Save:1}, habilidades:[
   {nome:"x",descricao:"x"},
@@ -1553,6 +1556,7 @@ const descricoesSinergia = {
 "Really Longtime Friends":"When Ushijima Wakatoshi (Cultural Festival) receives a debuff, Tendo (Winter Break)’s [Block] and [Quick Attack] increase by 4%.This effect can stack up to a maximum of 12%.When Tendo (Winter Break)’s block results in a Nice Play, Ushijima (Cultural Festival)’s Power Attack increases by [Power Attack] × 10%.This effect lasts for 1 rally.",
 "Winter Break":"If Atsumu SP and Osamu SP are split in the front and back court, their [Strength] increase by 30%. At the end of each rally, Tendo SP's [Awareness] will decrease to 0 and his [Defensive Technique] will increase by 10%. Up to 3 stacks.When Tendo SP touches the ball for the first time in each rally, it will always be critical. At the start of a rally, the [Offensive Technique] and [Defensive Technique] of all team members increases by 2% x the number of (Winter Break) members. Up to 12% increase is possible.",
 "Strongest High School Twins":"At the start of the match, Osamu SP gains one stack of [Resourcefulness]. After Atsumu SP and Osamu SP each sets a ball once, allies [Attack Technique] and [Defensive Technique] are increased by 12.5%. This effect lasts for 1 rally.",
+"Winter Sports":"When your team type is advantageous, all players gain 15% main stats, Winter Sports members gain an additional +20%.",
 };
     
 /** Catálogo de MEMÓRIAS (exemplos; ajuste/expanda à vontade) */
@@ -2185,7 +2189,28 @@ img:"img/memories/MemoOhiraSSR.png"
     desc:"The member who equips this Memory gets [Quick Attack] +12/24%.When an ally performs a Toss, that member’s [Power] +2%, up to a maximum of 15 stacks.When that member performs a Toss, they gain an additional 2 stacks.",
     img:"img/memories/MemoOsamuSP.png"
   },
-
+{
+    id:"mem_koraiSP",
+    name:"Korai SP",
+    positions:["WS"],
+    bonus:{
+      Serve:{flat:765}, Spike:{flat:838}, Set:{flat:583},
+      Receive:{flat:838}, Block:{flat:656}, Save:{flat:619}
+    },
+    desc:"The member equipped with this memory gains 6/12 % to Main Parameters.When this member activates a skill, if the skill’s play type is different from the previously activated skill, the member gains +2% [Attack Technique] and +2% [Defense Technique].Stacks up to 10 times.",
+    img:"img/memories/MemoKoraiSP.png"
+  },
+     {
+    id:"mem_hirugamiSP",
+    name:"Hirugami SP",
+    positions:["MB"],
+    bonus:{
+      Serve:{flat:838}, Spike:{flat:765}, Set:{flat:656},
+      Receive:{flat:619}, Block:{flat:838}, Save:{flat:583}
+    },
+    desc:"The member equipped with this memory gains 12/24 % [Block].If there are 4 or more Block-type allies, all allied members gain +10% [Block] and +10% [Quick Attack].This effect lasts for 1 rally.",
+    img:"img/memories/MemoHirugamiSP.png"
+  },
 ];
 
 /** Catálogo de SETS (POTENTIAL)  * */
